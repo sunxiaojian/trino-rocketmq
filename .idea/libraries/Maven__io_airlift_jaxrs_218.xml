@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: io.airlift:jaxrs:218">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/io/airlift/jaxrs/218/jaxrs-218.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/io/airlift/jaxrs/218/jaxrs-218-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/io/airlift/jaxrs/218/jaxrs-218-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

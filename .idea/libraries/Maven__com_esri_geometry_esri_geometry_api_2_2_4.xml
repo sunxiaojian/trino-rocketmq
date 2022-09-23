@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.esri.geometry:esri-geometry-api:2.2.4">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/esri/geometry/esri-geometry-api/2.2.4/esri-geometry-api-2.2.4.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/esri/geometry/esri-geometry-api/2.2.4/esri-geometry-api-2.2.4-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/esri/geometry/esri-geometry-api/2.2.4/esri-geometry-api-2.2.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

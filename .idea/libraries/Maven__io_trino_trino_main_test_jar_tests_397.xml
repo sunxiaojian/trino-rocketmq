@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: io.trino:trino-main:test-jar:tests:397">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/io/trino/trino-main/397/trino-main-397-tests.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/io/trino/trino-main/397/trino-main-397-test-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/io/trino/trino-main/397/trino-main-397-test-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
