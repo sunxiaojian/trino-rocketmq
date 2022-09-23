@@ -22,6 +22,7 @@
     <properties>
         <trino.version>397</trino.version>
         <dep.airlift.version>218</dep.airlift.version>
+        <rocketmq.version>4.7.1</rocketmq.version>
     </properties>
 
     <dependencies>
@@ -251,6 +252,12 @@
             <artifactId>testng</artifactId>
             <version>7.6.1</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-client</artifactId>
+            <version>${rocketmq.version}</version>
         </dependency>
     </dependencies>
 </project>
