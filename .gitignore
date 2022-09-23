@@ -8,6 +8,6 @@
 target/
 devenv
 *.log*
-.idea/*
+.idea/
 *.versionsBackup
 .DS_Store
