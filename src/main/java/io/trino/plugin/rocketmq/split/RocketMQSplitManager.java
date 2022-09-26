@@ -99,6 +99,8 @@ public class RocketMQSplitManager implements ConnectorSplitManager {
 
         } catch (RemotingException | MQClientException | InterruptedException | MQBrokerException e) {
             throw new RuntimeException(e);
+        } finally {
+            adminClient.shutdown();
         }
         return new FixedSplitSource(splits.build());
     }
