@@ -20,8 +20,6 @@ import io.trino.spi.HostAddress;
 
 
 public class RocketMQConfig {
-
-
     private static final int NAME_SRV_DEFAULT_PORT = 9876;
 
     private HostAddress nameSrvAddr = HostAddress.fromString("localhost:9876") ;
