@@ -22,18 +22,32 @@ import io.trino.spi.HostAddress;
 public class RocketMQConfig {
     private static final int NAME_SRV_DEFAULT_PORT = 9876;
 
-    private HostAddress nameSrvAddr = HostAddress.fromString("localhost:9876") ;
-
+    private HostAddress nameSrvAddr = HostAddress.fromString("localhost:9876");
+    private String rmqConsumeGroup = "RmqConsumeGroup";
     private String defaultSchema = "default";
     private boolean hideInternalColumns = true;
     private int messagesPerSplit = 100_000;
-
     private String tableDescriptionSupplier = FileTableDescriptionSupplier.NAME;
 
-    /** set acl config **/
+    /**
+     * set acl config
+     **/
     private boolean aclEnable;
     private String accessKey;
     private String secretKey;
+
+
+    public String getRmqConsumeGroup() {
+        return rmqConsumeGroup;
+    }
+
+    @Config("RocketMQ.rmq-consume-group")
+    @ConfigDescription("")
+    public RocketMQConfig setRmqConsumeGroup(String rmqConsumeGroup) {
+        this.rmqConsumeGroup = rmqConsumeGroup;
+        return this;
+    }
+
 
     public HostAddress getNameSrvAddr() {
         return nameSrvAddr;

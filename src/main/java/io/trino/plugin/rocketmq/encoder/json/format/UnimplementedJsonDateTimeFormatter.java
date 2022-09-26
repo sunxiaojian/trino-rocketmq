@@ -11,24 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.trino.plugin.rocketmq.encoder.json.format;
 
-package io.trino.plugin.rocketmq;
-
-import com.google.common.collect.ImmutableList;
-import io.trino.spi.Plugin;
-import io.trino.spi.connector.ConnectorFactory;
-
-/**
- * rocketmq plugin
- */
-public class RocketMQPlugin implements Plugin {
-
-    /**
-     * Get connector factory
-     * @return
-     */
-    @Override
-    public Iterable<ConnectorFactory> getConnectorFactories() {
-        return ImmutableList.of(new RocketMQConnectorFactory());
-    }
+public class UnimplementedJsonDateTimeFormatter implements JsonDateTimeFormatter {
 }

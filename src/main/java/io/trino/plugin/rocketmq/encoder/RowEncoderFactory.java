@@ -11,24 +11,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.trino.plugin.rocketmq.encoder;
 
-package io.trino.plugin.rocketmq;
+import io.trino.spi.connector.ConnectorSession;
 
-import com.google.common.collect.ImmutableList;
-import io.trino.spi.Plugin;
-import io.trino.spi.connector.ConnectorFactory;
+import java.util.List;
+import java.util.Optional;
 
-/**
- * rocketmq plugin
- */
-public class RocketMQPlugin implements Plugin {
-
-    /**
-     * Get connector factory
-     * @return
-     */
-    @Override
-    public Iterable<ConnectorFactory> getConnectorFactories() {
-        return ImmutableList.of(new RocketMQConnectorFactory());
-    }
+public interface RowEncoderFactory {
+    RowEncoder create(ConnectorSession session, Optional<String> dataSchema, List<EncoderColumnHandle> columnHandles);
 }

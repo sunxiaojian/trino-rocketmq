@@ -11,24 +11,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.trino.plugin.rocketmq.encoder;
 
-package io.trino.plugin.rocketmq;
+import io.trino.spi.block.Block;
 
-import com.google.common.collect.ImmutableList;
-import io.trino.spi.Plugin;
-import io.trino.spi.connector.ConnectorFactory;
+import java.io.Closeable;
 
-/**
- * rocketmq plugin
- */
-public class RocketMQPlugin implements Plugin {
+public interface RowEncoder
+        extends Closeable {
+    /**
+     * Adds the value from the given block/position to the row being encoded
+     */
+    void appendColumnValue(Block block, int position);
 
     /**
-     * Get connector factory
-     * @return
+     * Returns the encoded values as a byte array, and resets any info needed to prepare for next row
      */
-    @Override
-    public Iterable<ConnectorFactory> getConnectorFactories() {
-        return ImmutableList.of(new RocketMQConnectorFactory());
-    }
+    byte[] toByteArray();
 }

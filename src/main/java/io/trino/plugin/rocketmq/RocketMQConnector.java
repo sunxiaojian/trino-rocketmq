@@ -24,15 +24,12 @@ import io.trino.spi.connector.ConnectorSession;
 import io.trino.spi.connector.ConnectorSplitManager;
 import io.trino.spi.connector.ConnectorTransactionHandle;
 import io.trino.spi.session.PropertyMetadata;
-import io.trino.spi.transaction.IsolationLevel;
 
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Set;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.trino.spi.transaction.IsolationLevel.READ_COMMITTED;
-import static io.trino.spi.transaction.IsolationLevel.checkConnectorSupports;
 
 /**
  * RocketMQ connector
@@ -91,8 +88,7 @@ public class RocketMQConnector implements Connector {
     }
 
     @Override
-    public final void shutdown()
-    {
+    public final void shutdown() {
         lifeCycleManager.stop();
     }
 }

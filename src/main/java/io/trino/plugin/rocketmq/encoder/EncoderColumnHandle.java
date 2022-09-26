@@ -16,9 +16,7 @@ package io.trino.plugin.rocketmq.encoder;
 import io.trino.spi.connector.ColumnHandle;
 import io.trino.spi.type.Type;
 
-public interface EncoderColumnHandle
-        extends ColumnHandle
-{
+public interface EncoderColumnHandle extends ColumnHandle {
     boolean isInternal();
 
     String getFormatHint();

@@ -10,11 +10,8 @@ import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.remoting.RPCHook;
 import org.apache.rocketmq.tools.admin.DefaultMQAdminExt;
-import org.apache.rocketmq.tools.admin.DefaultMQAdminExtImpl;
 
 import javax.inject.Inject;
-import java.util.Objects;
-import java.util.UUID;
 
 /**
  * rocketmq consumer factory
@@ -55,8 +52,8 @@ public class DefaultRocketMQConsumerFactory implements RocketMQConsumerFactory{
                 admin = new DefaultMQAdminExt();
             }
             admin.setNamesrvAddr(config.getNameSrvAddr().toString());
+            admin.setAdminExtGroup(config.getRmqConsumeGroup());
             String uniqueName = Thread.currentThread().getName() + "-" + System.currentTimeMillis() % 1000;
-            admin.setAdminExtGroup("");
             admin.setInstanceName(uniqueName);
             admin.start();
         } catch (MQClientException e) {
@@ -69,7 +66,6 @@ public class DefaultRocketMQConsumerFactory implements RocketMQConsumerFactory{
     public HostAddress hostAddress() {
         return this.config.getNameSrvAddr();
     }
-
 
     private static RPCHook getAclRPCHook(String accessKey, String secretKey) {
         return new AclClientRPCHook(new SessionCredentials(accessKey, secretKey));

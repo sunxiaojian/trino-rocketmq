@@ -38,7 +38,7 @@ public class RocketMQConnectorFactory implements ConnectorFactory {
 
 
     public String getName() {
-        return "RocketMQ";
+        return "rocketmq";
     }
 
     /**
@@ -53,7 +53,6 @@ public class RocketMQConnectorFactory implements ConnectorFactory {
         requireNonNull(catalogName, "Catalog name is null");
         requireNonNull(config, "Config is null");
         checkSpiVersion(context, this);
-
         // registry module
         Bootstrap bootstrap = new Bootstrap(
                 new CatalogNameModule(catalogName),
@@ -65,7 +64,6 @@ public class RocketMQConnectorFactory implements ConnectorFactory {
                     binder.bind(TypeManager.class).toInstance(context.getTypeManager());
                     binder.bind(NodeManager.class).toInstance(context.getNodeManager());
                 });
-
         // initialize
         Injector injector = bootstrap
                 .doNotInitializeLogging()

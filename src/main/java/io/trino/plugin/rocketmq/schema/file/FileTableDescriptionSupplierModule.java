@@ -17,6 +17,7 @@ import com.google.inject.Binder;
 import com.google.inject.Scopes;
 import io.airlift.configuration.AbstractConfigurationAwareModule;
 import io.trino.decoder.DecoderModule;
+import io.trino.plugin.rocketmq.encoder.EncoderModule;
 import io.trino.plugin.rocketmq.schema.ContentSchemaReader;
 import io.trino.plugin.rocketmq.schema.TableDescriptionSupplier;
 
@@ -29,7 +30,7 @@ public class FileTableDescriptionSupplierModule extends AbstractConfigurationAwa
         configBinder(binder).bindConfig(FileTableDescriptionSupplierConfig.class);
         binder.bind(TableDescriptionSupplier.class).toProvider(FileTableDescriptionSupplier.class).in(Scopes.SINGLETON);
         install(new DecoderModule());
-//        install(new EncoderModule());
+        install(new EncoderModule());
         binder.bind(ContentSchemaReader.class).to(FileContentSchemaReader.class).in(Scopes.SINGLETON);
     }
 }
