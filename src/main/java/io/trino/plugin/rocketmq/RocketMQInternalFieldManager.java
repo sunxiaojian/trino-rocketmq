@@ -42,7 +42,6 @@ public class RocketMQInternalFieldManager {
 
     public static final String QUEUE_OFFSET_FIELD = "_queue_offset";
 
-
     public static final String MSG_ID = "_msg_id";
     public static final String MESSAGE_FIELD = "_message";
     public static final String MESSAGE_LENGTH_FIELD = "_message_length";
@@ -142,11 +141,8 @@ public class RocketMQInternalFieldManager {
                     .build();
         }
     }
-    /**
-     * @return Map of {@link InternalField} for each internal field.
-     */
-    public Map<String, InternalField> getInternalFields()
-    {
+
+    public Map<String, InternalField> getInternalFields() {
         return internalFields;
     }
 }
