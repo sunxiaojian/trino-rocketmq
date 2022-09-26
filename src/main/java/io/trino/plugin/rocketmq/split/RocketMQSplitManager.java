@@ -14,6 +14,11 @@
 
 package io.trino.plugin.rocketmq.split;
 
+import com.google.common.collect.ImmutableList;
+import io.trino.plugin.rocketmq.RocketMQConfig;
+import io.trino.plugin.rocketmq.RocketMQConsumerFactory;
+import io.trino.plugin.rocketmq.RocketMQTableHandle;
+import io.trino.plugin.rocketmq.schema.ContentSchemaReader;
 import io.trino.spi.connector.ConnectorSession;
 import io.trino.spi.connector.ConnectorSplitManager;
 import io.trino.spi.connector.ConnectorSplitSource;
@@ -21,15 +26,80 @@ import io.trino.spi.connector.ConnectorTableHandle;
 import io.trino.spi.connector.ConnectorTransactionHandle;
 import io.trino.spi.connector.Constraint;
 import io.trino.spi.connector.DynamicFilter;
+import io.trino.spi.connector.FixedSplitSource;
+import org.apache.rocketmq.client.consumer.DefaultLitePullConsumer;
+import org.apache.rocketmq.client.exception.MQBrokerException;
+import org.apache.rocketmq.client.exception.MQClientException;
+import org.apache.rocketmq.common.admin.TopicOffset;
+import org.apache.rocketmq.common.admin.TopicStatsTable;
+import org.apache.rocketmq.common.message.MessageQueue;
+import org.apache.rocketmq.remoting.exception.RemotingException;
+import org.apache.rocketmq.tools.admin.DefaultMQAdminExt;
+
+import javax.inject.Inject;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static java.util.Objects.requireNonNull;
 
 /**
- * RocketMQ split manager
+ * RocketMQ topic split manager
  */
 public class RocketMQSplitManager implements ConnectorSplitManager {
 
-    @Override
-    public ConnectorSplitSource getSplits(ConnectorTransactionHandle transaction, ConnectorSession session, ConnectorTableHandle table, DynamicFilter dynamicFilter, Constraint constraint) {
+    private final RocketMQConsumerFactory consumerFactory;
+    private final ContentSchemaReader contentSchemaReader;
+    private final int messagesPerSplit;
 
-        return null;
+    @Inject
+    public RocketMQSplitManager(RocketMQConsumerFactory consumerFactory, RocketMQConfig config, ContentSchemaReader contentSchemaReader) {
+        this.consumerFactory = requireNonNull(consumerFactory, "consumerFactory is null");
+        this.messagesPerSplit = config.getMessagesPerSplit();
+        this.contentSchemaReader = requireNonNull(contentSchemaReader, "contentSchemaReader is null");
+    }
+
+    @Override
+    public ConnectorSplitSource getSplits(
+            ConnectorTransactionHandle transaction,
+            ConnectorSession session,
+            ConnectorTableHandle table,
+            DynamicFilter dynamicFilter,
+            Constraint constraint) {
+
+        ImmutableList.Builder<RocketMQSplit> splits = ImmutableList.builder();
+        RocketMQTableHandle tableHandle = (RocketMQTableHandle) table;
+        DefaultMQAdminExt adminClient = consumerFactory.admin(session);
+        try {
+            TopicStatsTable topicStatsTable = adminClient.examineTopicStats(tableHandle.getTopicName());
+            HashMap<MessageQueue, TopicOffset> offsets = topicStatsTable.getOffsetTable();
+
+            Optional<String> keyDataSchemaContents = contentSchemaReader.readKeyContentSchema(tableHandle);
+            Optional<String> messageDataSchemaContents = contentSchemaReader.readValueContentSchema(tableHandle);
+            for (Map.Entry<MessageQueue, TopicOffset> offset : offsets.entrySet()){
+                // build rocketmq split
+                MessageQueue queue = offset.getKey();
+                TopicOffset topicOffset = offset.getValue();
+                List<Range> ranges = new Range(topicOffset.getMinOffset(), topicOffset.getMaxOffset())
+                        .partition(messagesPerSplit);
+                ranges.stream().map(range -> new RocketMQSplit(
+                        tableHandle.getTopicName(),
+                        tableHandle.getKeyDataFormat(),
+                        tableHandle.getMessageDataFormat(),
+                        keyDataSchemaContents,
+                        messageDataSchemaContents,
+                        queue.getQueueId(),
+                        queue.getBrokerName(),
+                        range,
+                        consumerFactory.hostAddress()
+                        )).forEach(splits::add);
+            }
+
+        } catch (RemotingException | MQClientException | InterruptedException | MQBrokerException e) {
+            throw new RuntimeException(e);
+        }
+        return new FixedSplitSource(splits.build());
     }
 }

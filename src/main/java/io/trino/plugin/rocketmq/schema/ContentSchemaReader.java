@@ -11,23 +11,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.trino.plugin.rocketmq;
+package io.trino.plugin.rocketmq.schema;
 
-import com.google.common.collect.ImmutableList;
-import io.trino.spi.Plugin;
-import io.trino.spi.connector.ConnectorFactory;
+import io.trino.plugin.rocketmq.RocketMQTableHandle;
 
-/**
- * rocketmq plugin
- */
-public class RocketMQPlugin implements Plugin {
+import java.util.Optional;
 
-    /**
-     * Get connector factory
-     * @return
-     */
-    @Override
-    public Iterable<ConnectorFactory> getConnectorFactories() {
-        return ImmutableList.of(new RocketMQConnectorFactory());
-    }
+public interface ContentSchemaReader {
+    Optional<String> readKeyContentSchema(RocketMQTableHandle tableHandle);
+
+    Optional<String> readValueContentSchema(RocketMQTableHandle tableHandle);
 }

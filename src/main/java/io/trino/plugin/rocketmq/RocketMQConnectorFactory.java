@@ -14,11 +14,21 @@
 
 package io.trino.plugin.rocketmq;
 
+import com.google.inject.Injector;
+import io.airlift.bootstrap.Bootstrap;
+import io.airlift.json.JsonModule;
+import io.trino.plugin.base.CatalogNameModule;
+import io.trino.plugin.base.TypeDeserializerModule;
+import io.trino.spi.NodeManager;
 import io.trino.spi.connector.Connector;
 import io.trino.spi.connector.ConnectorContext;
 import io.trino.spi.connector.ConnectorFactory;
+import io.trino.spi.type.TypeManager;
 
 import java.util.Map;
+
+import static io.trino.plugin.base.Versions.checkSpiVersion;
+import static java.util.Objects.requireNonNull;
 
 
 /**
@@ -31,7 +41,36 @@ public class RocketMQConnectorFactory implements ConnectorFactory {
         return "RocketMQ";
     }
 
+    /**
+     * create connector
+     * @param catalogName
+     * @param config
+     * @param context
+     * @return
+     */
+    @Override
     public Connector create(String catalogName, Map<String, String> config, ConnectorContext context) {
-        return null;
+        requireNonNull(catalogName, "Catalog name is null");
+        requireNonNull(config, "Config is null");
+        checkSpiVersion(context, this);
+
+        // registry module
+        Bootstrap bootstrap = new Bootstrap(
+                new CatalogNameModule(catalogName),
+                new JsonModule(),
+                new TypeDeserializerModule(context.getTypeManager()),
+                new RocketMQConnectorModule(),
+                binder -> {
+                    binder.bind(ClassLoader.class).toInstance(RocketMQConnectorFactory.class.getClassLoader());
+                    binder.bind(TypeManager.class).toInstance(context.getTypeManager());
+                    binder.bind(NodeManager.class).toInstance(context.getNodeManager());
+                });
+
+        // initialize
+        Injector injector = bootstrap
+                .doNotInitializeLogging()
+                .setRequiredConfigurationProperties(config)
+                .initialize();
+        return injector.getInstance(RocketMQConnector.class);
     }
 }
