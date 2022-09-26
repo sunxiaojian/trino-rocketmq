@@ -13,13 +13,11 @@
  */
 package io.trino.plugin.rocketmq;
 
-import com.google.common.collect.ImmutableSet;
 import io.airlift.configuration.Config;
 import io.airlift.configuration.ConfigDescription;
 import io.trino.plugin.rocketmq.schema.file.FileTableDescriptionSupplier;
 import io.trino.spi.HostAddress;
 
-import java.util.Set;
 
 public class RocketMQConfig {
 
