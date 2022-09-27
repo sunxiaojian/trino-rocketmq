@@ -20,13 +20,13 @@ public abstract class AbstractContentSchemaReader implements ContentSchemaReader
     @Override
     public final Optional<String> readKeyContentSchema(RocketMQTableHandle tableHandle)
     {
-        return readSchema(tableHandle.getKeyDataSchemaLocation(), tableHandle.getKeySubject());
+        return readSchema(tableHandle.getKeySchemaLocation(), tableHandle.getKeySubject());
     }
 
     @Override
     public final Optional<String> readValueContentSchema(RocketMQTableHandle tableHandle)
     {
-        return readSchema(tableHandle.getMessageDataSchemaLocation(), tableHandle.getMessageSubject());
+        return readSchema(tableHandle.getValueSchemaLocation(), tableHandle.getMessageSubject());
     }
 
     protected abstract Optional<String> readSchema(Optional<String> dataSchemaLocation, Optional<String> subject);

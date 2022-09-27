@@ -41,7 +41,6 @@ import io.trino.spi.connector.TableNotFoundException;
 import io.trino.spi.predicate.TupleDomain;
 import io.trino.spi.statistics.ComputedStatistics;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.Collection;
 import java.util.List;
@@ -230,8 +229,8 @@ public class RocketMQMetadata implements ConnectorMetadata {
                 handle.getTopicName(),
                 handle.getKeyDataFormat(),
                 handle.getMessageDataFormat(),
-                handle.getKeyDataSchemaLocation(),
-                handle.getMessageDataSchemaLocation(),
+                handle.getKeySchemaLocation(),
+                handle.getValueSchemaLocation(),
                 handle.getKeySubject(),
                 handle.getMessageSubject(),
                 handle.getColumns(),
@@ -269,8 +268,8 @@ public class RocketMQMetadata implements ConnectorMetadata {
                 table.getTopicName(),
                 table.getKeyDataFormat(),
                 table.getMessageDataFormat(),
-                table.getKeyDataSchemaLocation(),
-                table.getMessageDataSchemaLocation(),
+                table.getKeySchemaLocation(),
+                table.getValueSchemaLocation(),
                 table.getKeySubject(),
                 table.getMessageSubject(),
                 actualColumns,

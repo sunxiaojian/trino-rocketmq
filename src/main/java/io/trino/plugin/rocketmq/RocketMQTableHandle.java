@@ -56,11 +56,11 @@ public final class RocketMQTableHandle implements ConnectorTableHandle, Connecto
     /**
      * key data schema location
      */
-    private final Optional<String> keyDataSchemaLocation;
+    private final Optional<String> keySchemaLocation;
     /**
      * Message data schema location
      */
-    private final Optional<String> messageDataSchemaLocation;
+    private final Optional<String> valueSchemaLocation;
     private final Optional<String> keySubject;
     private final Optional<String> messageSubject;
     private final List<RocketMQColumnHandle> columns;
@@ -73,7 +73,7 @@ public final class RocketMQTableHandle implements ConnectorTableHandle, Connecto
             @JsonProperty("topicName") String topicName,
             @JsonProperty("keyDataFormat") String keyDataFormat,
             @JsonProperty("messageDataFormat") String messageDataFormat,
-            @JsonProperty("keyDataSchemaLocation") Optional<String> keyDataSchemaLocation,
+            @JsonProperty("keyDataSchemaLocation") Optional<String> keySchemaLocation,
             @JsonProperty("messageDataSchemaLocation") Optional<String> messageDataSchemaLocation,
             @JsonProperty("keySubject") Optional<String> keySubject,
             @JsonProperty("messageSubject") Optional<String> messageSubject,
@@ -84,8 +84,8 @@ public final class RocketMQTableHandle implements ConnectorTableHandle, Connecto
         this.topicName = requireNonNull(topicName, "topicName is null");
         this.keyDataFormat = requireNonNull(keyDataFormat, "keyDataFormat is null");
         this.messageDataFormat = requireNonNull(messageDataFormat, "messageDataFormat is null");
-        this.keyDataSchemaLocation = requireNonNull(keyDataSchemaLocation, "keyDataSchemaLocation is null");
-        this.messageDataSchemaLocation = requireNonNull(messageDataSchemaLocation, "messageDataSchemaLocation is null");
+        this.keySchemaLocation = requireNonNull(keySchemaLocation, "keyDataSchemaLocation is null");
+        this.valueSchemaLocation = requireNonNull(messageDataSchemaLocation, "messageDataSchemaLocation is null");
         this.keySubject = requireNonNull(keySubject, "keySubject is null");
         this.messageSubject = requireNonNull(messageSubject, "messageSubject is null");
         this.columns = ImmutableList.copyOf(requireNonNull(columns, "columns is null"));
@@ -118,13 +118,13 @@ public final class RocketMQTableHandle implements ConnectorTableHandle, Connecto
     }
 
     @JsonProperty
-    public Optional<String> getMessageDataSchemaLocation() {
-        return messageDataSchemaLocation;
+    public Optional<String> getValueSchemaLocation() {
+        return valueSchemaLocation;
     }
 
     @JsonProperty
-    public Optional<String> getKeyDataSchemaLocation() {
-        return keyDataSchemaLocation;
+    public Optional<String> getKeySchemaLocation() {
+        return keySchemaLocation;
     }
 
     @JsonProperty
@@ -159,8 +159,8 @@ public final class RocketMQTableHandle implements ConnectorTableHandle, Connecto
                 topicName,
                 keyDataFormat,
                 messageDataFormat,
-                keyDataSchemaLocation,
-                messageDataSchemaLocation,
+                keySchemaLocation,
+                valueSchemaLocation,
                 keySubject,
                 messageSubject,
                 columns,
@@ -182,8 +182,8 @@ public final class RocketMQTableHandle implements ConnectorTableHandle, Connecto
                 && Objects.equals(this.topicName, other.topicName)
                 && Objects.equals(this.keyDataFormat, other.keyDataFormat)
                 && Objects.equals(this.messageDataFormat, other.messageDataFormat)
-                && Objects.equals(this.keyDataSchemaLocation, other.keyDataSchemaLocation)
-                && Objects.equals(this.messageDataSchemaLocation, other.messageDataSchemaLocation)
+                && Objects.equals(this.keySchemaLocation, other.keySchemaLocation)
+                && Objects.equals(this.valueSchemaLocation, other.valueSchemaLocation)
                 && Objects.equals(this.keySubject, other.keySubject)
                 && Objects.equals(this.messageSubject, other.messageSubject)
                 && Objects.equals(this.columns, other.columns)
@@ -198,8 +198,8 @@ public final class RocketMQTableHandle implements ConnectorTableHandle, Connecto
                 .add("topicName", topicName)
                 .add("keyDataFormat", keyDataFormat)
                 .add("messageDataFormat", messageDataFormat)
-                .add("keyDataSchemaLocation", keyDataSchemaLocation)
-                .add("messageDataSchemaLocation", messageDataSchemaLocation)
+                .add("keyDataSchemaLocation", keySchemaLocation)
+                .add("messageDataSchemaLocation", valueSchemaLocation)
                 .add("keySubject", keySubject)
                 .add("messageSubject", messageSubject)
                 .add("columns", columns)
