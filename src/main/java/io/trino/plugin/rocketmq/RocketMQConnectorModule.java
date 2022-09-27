@@ -48,7 +48,8 @@ public class RocketMQConnectorModule
         binder.bind(ConnectorSplitManager.class).to(ClassLoaderSafeConnectorSplitManager.class).in(Scopes.SINGLETON);
         binder.bind(ConnectorRecordSetProvider.class).annotatedWith(ForClassLoaderSafe.class).to(RocketMQRecordSetProvider.class).in(Scopes.SINGLETON);
         binder.bind(ConnectorRecordSetProvider.class).to(ClassLoaderSafeConnectorRecordSetProvider.class).in(Scopes.SINGLETON);
-       //  binder.bind(ConnectorPageSinkProvider.class).annotatedWith(ForClassLoaderSafe.class).to(RocketMQPageSinkProvider.class).in(Scopes.SINGLETON);
+        // page sink provider
+        binder.bind(ConnectorPageSinkProvider.class).annotatedWith(ForClassLoaderSafe.class).to(RocketMQPageSinkProvider.class).in(Scopes.SINGLETON);
         binder.bind(ConnectorPageSinkProvider.class).to(ClassLoaderSafeConnectorPageSinkProvider.class).in(Scopes.SINGLETON);
         binder.bind(RocketMQConnector.class).in(Scopes.SINGLETON);
         binder.bind(RocketMQInternalFieldManager.class).in(Scopes.SINGLETON);

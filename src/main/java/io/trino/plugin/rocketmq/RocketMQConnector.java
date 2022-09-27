@@ -40,7 +40,6 @@ public class RocketMQConnector implements Connector {
     private final ConnectorMetadata metadata;
     private final ConnectorSplitManager splitManager;
     private final ConnectorPageSinkProvider pageSinkProvider;
-
     private final List<PropertyMetadata<?>> sessionProperties;
     private final  ConnectorRecordSetProvider recordSetProvider;
     @Inject
