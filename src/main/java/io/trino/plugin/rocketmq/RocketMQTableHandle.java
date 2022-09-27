@@ -79,9 +79,9 @@ public final class RocketMQTableHandle implements ConnectorTableHandle, Connecto
             @JsonProperty("messageSubject") Optional<String> messageSubject,
             @JsonProperty("columns") List<RocketMQColumnHandle> columns,
             @JsonProperty("constraint") TupleDomain<ColumnHandle> constraint) {
-        this.schemaName = requireNonNull(schemaName, "schemaName is null");
-        this.tableName = requireNonNull(tableName, "tableName is null");
-        this.topicName = requireNonNull(topicName, "topicName is null");
+        this.schemaName = requireNonNull(schemaName, "Schema name is null");
+        this.tableName = requireNonNull(tableName, "Table name is null");
+        this.topicName = requireNonNull(topicName, "Topic name is null");
         this.keyDataFormat = requireNonNull(keyDataFormat, "keyDataFormat is null");
         this.messageDataFormat = requireNonNull(messageDataFormat, "messageDataFormat is null");
         this.keySchemaLocation = requireNonNull(keySchemaLocation, "keyDataSchemaLocation is null");
