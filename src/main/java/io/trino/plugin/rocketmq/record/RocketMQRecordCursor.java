@@ -219,8 +219,6 @@ public class RocketMQRecordCursor implements RecordCursor {
         return true; // Advanced successfully.
     }
 
-
-
     public static FieldValueProvider propertiesValueProvider(MapType varcharMapType, Map<String, String> props)
     {
         Type keyType = varcharMapType.getTypeParameters().get(0);

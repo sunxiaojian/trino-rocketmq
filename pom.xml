@@ -5,19 +5,7 @@
     <groupId>io.trino.plugin.rocketmq</groupId>
     <artifactId>trino-rocketmq</artifactId>
     <description>Trino - rocketmq Connector</description>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>9</source>
-                    <target>9</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>397</version>
 
     <properties>
         <trino.version>397</trino.version>
@@ -26,7 +14,6 @@
     </properties>
 
     <dependencies>
-
         <!--Trino dependency-->
         <dependency>
             <groupId>io.trino</groupId>
@@ -266,4 +253,45 @@
             <version>${rocketmq.version}</version>
         </dependency>
     </dependencies>
+
+
+    <!-- 自定义打zip包-->
+
+
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>assembly/assembly.xml</descriptor>
+                    </descriptors>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
+
+
