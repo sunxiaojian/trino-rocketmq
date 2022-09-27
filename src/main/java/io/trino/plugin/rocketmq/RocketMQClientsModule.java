@@ -20,6 +20,9 @@ import io.airlift.configuration.AbstractConfigurationAwareModule;
 public class RocketMQClientsModule extends AbstractConfigurationAwareModule {
     @Override
     protected void setup(Binder binder) {
+        // consumer
         binder.bind(RocketMQConsumerFactory.class).to(DefaultRocketMQConsumerFactory.class).in(Scopes.SINGLETON);
+        // producer
+        binder.bind(RocketMQProducerFactory.class).to(DefaultRocketMQProducerFactory.class).in(Scopes.SINGLETON);
     }
 }
