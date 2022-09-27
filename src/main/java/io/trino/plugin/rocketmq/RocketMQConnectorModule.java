@@ -55,6 +55,7 @@ public class RocketMQConnectorModule
 
         // build config
         configBinder(binder).bindConfig(RocketMQConfig.class);
+        // file table description
         bindTopicSchemaProviderModule(FileTableDescriptionSupplier.NAME, new FileTableDescriptionSupplierModule());
 //        bindTopicSchemaProviderModule(ConfluentSchemaRegistryTableDescriptionSupplier.NAME, new ConfluentModule());
         jsonCodecBinder(binder).bindJsonCodec(RocketMQTopicDescription.class);

@@ -14,18 +14,12 @@
 package io.trino.plugin.rocketmq;
 
 import com.google.inject.Binder;
-import com.google.inject.Module;
 import com.google.inject.Scopes;
 import io.airlift.configuration.AbstractConfigurationAwareModule;
 
 public class RocketMQClientsModule extends AbstractConfigurationAwareModule {
     @Override
     protected void setup(Binder binder) {
-        install(RocketMQClientsModule::configureDefault);
-    }
-
-    private static void configureDefault(Binder binder) {
         binder.bind(RocketMQConsumerFactory.class).to(DefaultRocketMQConsumerFactory.class).in(Scopes.SINGLETON);
     }
-
 }

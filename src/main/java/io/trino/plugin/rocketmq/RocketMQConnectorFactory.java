@@ -15,6 +15,7 @@
 package io.trino.plugin.rocketmq;
 
 import com.google.inject.Injector;
+import com.google.inject.Module;
 import io.airlift.bootstrap.Bootstrap;
 import io.airlift.json.JsonModule;
 import io.trino.plugin.base.CatalogNameModule;
@@ -35,6 +36,13 @@ import static java.util.Objects.requireNonNull;
  * RocketMQ connector factory
  */
 public class RocketMQConnectorFactory implements ConnectorFactory {
+
+
+    private final Module extension;
+
+    public RocketMQConnectorFactory(Module extension) {
+        this.extension = requireNonNull(extension, "extension is null");
+    }
 
 
     public String getName() {
@@ -59,6 +67,7 @@ public class RocketMQConnectorFactory implements ConnectorFactory {
                 new JsonModule(),
                 new TypeDeserializerModule(context.getTypeManager()),
                 new RocketMQConnectorModule(),
+                extension,
                 binder -> {
                     binder.bind(ClassLoader.class).toInstance(RocketMQConnectorFactory.class.getClassLoader());
                     binder.bind(TypeManager.class).toInstance(context.getTypeManager());

@@ -15,6 +15,9 @@
 package io.trino.plugin.rocketmq;
 
 import com.google.common.collect.ImmutableList;
+import com.google.inject.Binder;
+import com.google.inject.Module;
+import io.airlift.configuration.AbstractConfigurationAwareModule;
 import io.trino.spi.Plugin;
 import io.trino.spi.connector.ConnectorFactory;
 
@@ -22,6 +25,12 @@ import io.trino.spi.connector.ConnectorFactory;
  * rocketmq plugin
  */
 public class RocketMQPlugin implements Plugin {
+    public static final Module DEFAULT_EXTENSION = new AbstractConfigurationAwareModule() {
+        @Override
+        protected void setup(Binder binder) {
+            install(new RocketMQClientsModule());
+        }
+    };
 
     /**
      * Get connector factory
@@ -29,6 +38,6 @@ public class RocketMQPlugin implements Plugin {
      */
     @Override
     public Iterable<ConnectorFactory> getConnectorFactories() {
-        return ImmutableList.of(new RocketMQConnectorFactory());
+        return ImmutableList.of(new RocketMQConnectorFactory(DEFAULT_EXTENSION));
     }
 }
