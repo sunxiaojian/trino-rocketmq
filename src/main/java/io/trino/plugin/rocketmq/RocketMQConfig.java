@@ -87,7 +87,7 @@ public class RocketMQConfig {
     }
 
     @Config("RocketMQ.messages-per-split")
-    @ConfigDescription("Count of RocketMQ messages to be processed by single Trino Kafka connector split")
+    @ConfigDescription("Count of RocketMQ messages to be processed by single Trino rocketmq connector split")
     public RocketMQConfig setMessagesPerSplit(int messagesPerSplit) {
         this.messagesPerSplit = messagesPerSplit;
         return this;

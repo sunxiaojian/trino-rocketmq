@@ -22,6 +22,9 @@ import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.util.Set;
 
+/**
+ * File table description supplier config
+ */
 public class FileTableDescriptionSupplierConfig
 {
     private Set<String> tableNames = ImmutableSet.of();
@@ -46,7 +49,7 @@ public class FileTableDescriptionSupplierConfig
     }
 
     @Config("RocketMQ.table-description-dir")
-    @ConfigDescription("Folder holding JSON description files for Kafka topics")
+    @ConfigDescription("Folder holding JSON description files for rocketmq topics")
     public FileTableDescriptionSupplierConfig setTableDescriptionDir(File tableDescriptionDir) {
         this.tableDescriptionDir = tableDescriptionDir;
         return this;

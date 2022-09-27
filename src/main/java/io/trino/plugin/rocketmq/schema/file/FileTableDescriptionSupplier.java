@@ -69,7 +69,7 @@ public class FileTableDescriptionSupplier implements Provider<TableDescriptionSu
 
     private Map<SchemaTableName, RocketMQTopicDescription> populateTables() {
         ImmutableMap.Builder<SchemaTableName, RocketMQTopicDescription> builder = ImmutableMap.builder();
-        log.debug("Loading kafka table definitions from %s", tableDescriptionDir.getAbsolutePath());
+        log.debug("Loading rocketmq table definitions from %s", tableDescriptionDir.getAbsolutePath());
 
         try {
             for (File file : listFiles(tableDescriptionDir)) {
@@ -92,9 +92,9 @@ public class FileTableDescriptionSupplier implements Provider<TableDescriptionSu
                     tableName = new SchemaTableName(defaultSchema, definedTable);
                 }
                 if (tableDefinitions.containsKey(tableName)) {
-                    RocketMQTopicDescription kafkaTable = tableDefinitions.get(tableName);
-                    log.debug("Found Table definition for %s: %s", tableName, kafkaTable);
-                    builder.put(tableName, kafkaTable);
+                    RocketMQTopicDescription rocketmqTable = tableDefinitions.get(tableName);
+                    log.debug("Found Table definition for %s: %s", tableName, rocketmqTable);
+                    builder.put(tableName, rocketmqTable);
                 }
                 else {
                     // A dummy table definition only supports the internal columns.
@@ -111,7 +111,7 @@ public class FileTableDescriptionSupplier implements Provider<TableDescriptionSu
             return builder.buildOrThrow();
         }
         catch (IOException e) {
-            log.warn(e, "Failed to get table description files for Kafka");
+            log.warn(e, "Failed to get table description files for rocketmq");
             throw new UncheckedIOException(e);
         }
     }

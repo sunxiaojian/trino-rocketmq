@@ -42,6 +42,7 @@ import io.trino.spi.predicate.TupleDomain;
 import io.trino.spi.statistics.ComputedStatistics;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -62,10 +63,10 @@ public class RocketMQMetadata implements ConnectorMetadata {
     private final RocketMQInternalFieldManager rocketMQInternalFieldManager;
     private final TableDescriptionSupplier tableDescriptionSupplier;
 
+    @Inject
     public RocketMQMetadata(RocketMQConfig config,
                             RocketMQInternalFieldManager rocketMQInternalFieldManager,
-                            TableDescriptionSupplier tableDescriptionSupplier
-    ){
+                            TableDescriptionSupplier tableDescriptionSupplier){
         this.hideInternalColumns = config.isHideInternalColumns();
         this.rocketMQInternalFieldManager = rocketMQInternalFieldManager;
         this.tableDescriptionSupplier = tableDescriptionSupplier;
@@ -146,8 +147,8 @@ public class RocketMQMetadata implements ConnectorMetadata {
             }
         });
 
-        for (RocketMQInternalFieldManager.InternalField kafkaInternalField : rocketMQInternalFieldManager.getInternalFields().values()) {
-            columnHandles.put(kafkaInternalField.getColumnName(), kafkaInternalField.getColumnHandle(index.getAndIncrement(), hideInternalColumns));
+        for (RocketMQInternalFieldManager.InternalField rocketmqInternalField : rocketMQInternalFieldManager.getInternalFields().values()) {
+            columnHandles.put(rocketmqInternalField.getColumnName(), rocketmqInternalField.getColumnHandle(index.getAndIncrement(), hideInternalColumns));
         }
 
         return columnHandles.buildOrThrow();

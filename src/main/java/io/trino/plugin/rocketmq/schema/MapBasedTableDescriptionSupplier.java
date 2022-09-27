@@ -24,23 +24,23 @@ import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * map based table description supplier
+ */
 public class MapBasedTableDescriptionSupplier implements TableDescriptionSupplier {
     private final Map<SchemaTableName, RocketMQTopicDescription> map;
 
-    public MapBasedTableDescriptionSupplier(Map<SchemaTableName, RocketMQTopicDescription> map)
-    {
+    public MapBasedTableDescriptionSupplier(Map<SchemaTableName, RocketMQTopicDescription> map) {
         this.map = ImmutableMap.copyOf(requireNonNull(map, "map is null"));
     }
 
     @Override
-    public Set<SchemaTableName> listTables()
-    {
+    public Set<SchemaTableName> listTables() {
         return map.keySet();
     }
 
     @Override
-    public Optional<RocketMQTopicDescription> getTopicDescription(ConnectorSession session, SchemaTableName schemaTableName)
-    {
+    public Optional<RocketMQTopicDescription> getTopicDescription(ConnectorSession session, SchemaTableName schemaTableName) {
         return Optional.ofNullable(map.get(schemaTableName));
     }
 }
