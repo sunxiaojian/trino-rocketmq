@@ -53,12 +53,10 @@ public class RocketMQConnectorModule
         binder.bind(RocketMQConnector.class).in(Scopes.SINGLETON);
         binder.bind(RocketMQInternalFieldManager.class).in(Scopes.SINGLETON);
 
-
+        // build config
         configBinder(binder).bindConfig(RocketMQConfig.class);
-        //
         bindTopicSchemaProviderModule(FileTableDescriptionSupplier.NAME, new FileTableDescriptionSupplierModule());
-//         bindTopicSchemaProviderModule(ConfluentSchemaRegistryTableDescriptionSupplier.NAME, new ConfluentModule());
-//        newSetBinder(binder, SessionPropertiesProvider.class).addBinding().to(KafkaSessionProperties.class).in(Scopes.SINGLETON);
+//        bindTopicSchemaProviderModule(ConfluentSchemaRegistryTableDescriptionSupplier.NAME, new ConfluentModule());
         jsonCodecBinder(binder).bindJsonCodec(RocketMQTopicDescription.class);
     }
 

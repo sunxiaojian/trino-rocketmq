@@ -23,10 +23,12 @@ import io.trino.plugin.rocketmq.schema.TableDescriptionSupplier;
 
 import static io.airlift.configuration.ConfigBinder.configBinder;
 
+/**
+ * File table description supplier module
+ */
 public class FileTableDescriptionSupplierModule extends AbstractConfigurationAwareModule {
     @Override
-    protected void setup(Binder binder)
-    {
+    protected void setup(Binder binder) {
         configBinder(binder).bindConfig(FileTableDescriptionSupplierConfig.class);
         binder.bind(TableDescriptionSupplier.class).toProvider(FileTableDescriptionSupplier.class).in(Scopes.SINGLETON);
         install(new DecoderModule());
