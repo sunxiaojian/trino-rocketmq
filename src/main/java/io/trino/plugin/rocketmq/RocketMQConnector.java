@@ -23,13 +23,8 @@ import io.trino.spi.connector.ConnectorRecordSetProvider;
 import io.trino.spi.connector.ConnectorSession;
 import io.trino.spi.connector.ConnectorSplitManager;
 import io.trino.spi.connector.ConnectorTransactionHandle;
-import io.trino.spi.session.PropertyMetadata;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.Set;
-
-import static com.google.common.collect.ImmutableList.toImmutableList;
 
 /**
  * RocketMQ connector
@@ -40,7 +35,6 @@ public class RocketMQConnector implements Connector {
     private final ConnectorMetadata metadata;
     private final ConnectorSplitManager splitManager;
     private final ConnectorPageSinkProvider pageSinkProvider;
-    private final List<PropertyMetadata<?>> sessionProperties;
     private final  ConnectorRecordSetProvider recordSetProvider;
     @Inject
     public RocketMQConnector(
@@ -48,16 +42,12 @@ public class RocketMQConnector implements Connector {
             ConnectorMetadata connectorMetadata,
             ConnectorSplitManager connectorSplitManager,
             ConnectorRecordSetProvider recordSetProvider,
-            ConnectorPageSinkProvider pageSinkProvider,
-            Set<SessionPropertiesProvider> sessionProperties
+            ConnectorPageSinkProvider pageSinkProvider
     ){
         this.lifeCycleManager = lifeCycleManager;
         this.metadata = connectorMetadata;
         this.splitManager = connectorSplitManager;
         this.pageSinkProvider = pageSinkProvider;
-        this.sessionProperties = sessionProperties.stream()
-                .flatMap(sessionPropertiesProvider -> sessionPropertiesProvider.getSessionProperties().stream())
-                .collect(toImmutableList());
         this.recordSetProvider = recordSetProvider;
     }
 
@@ -81,10 +71,6 @@ public class RocketMQConnector implements Connector {
         return pageSinkProvider;
     }
 
-    @Override
-    public List<PropertyMetadata<?>> getSessionProperties() {
-        return sessionProperties;
-    }
 
     @Override
     public final void shutdown() {
