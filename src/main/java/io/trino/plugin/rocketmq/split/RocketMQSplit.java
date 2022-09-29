@@ -83,38 +83,44 @@ public class RocketMQSplit implements ConnectorSplit {
         return this;
     }
 
+    @JsonProperty
     public String getTopicName() {
         return topicName;
     }
-
+    @JsonProperty
     public String getKeyDataFormat() {
         return keyDataFormat;
     }
-
+    @JsonProperty
     public String getMessageDataFormat() {
         return messageDataFormat;
     }
-
+    @JsonProperty
     public Optional<String> getKeyDataSchemaContents() {
         return keyDataSchemaContents;
     }
 
+    @JsonProperty
     public Optional<String> getMessageDataSchemaContents() {
         return messageDataSchemaContents;
     }
 
+    @JsonProperty
     public int getQueueId() {
         return queueId;
     }
 
+    @JsonProperty
     public Range getMessagesRange() {
         return messagesRange;
     }
 
+    @JsonProperty
     public HostAddress getNamesrv() {
         return namesrv;
     }
 
+    @JsonProperty
     public String getBrokerName() {
         return brokerName;
     }
