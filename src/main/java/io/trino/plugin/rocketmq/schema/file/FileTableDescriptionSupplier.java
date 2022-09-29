@@ -104,7 +104,7 @@ public class FileTableDescriptionSupplier implements Provider<TableDescriptionSu
                             new RocketMQTopicDescription(
                                     tableName.getTableName(),
                                     Optional.ofNullable(tableName.getSchemaName()),
-                                    tableName.getTableName(),
+                                    definedTable,
                                     Optional.of(new RocketMQTopicFieldGroup(DummyRowDecoder.NAME, Optional.empty(), Optional.empty(), ImmutableList.of())),
                                     Optional.of(new RocketMQTopicFieldGroup(DummyRowDecoder.NAME, Optional.empty(), Optional.empty(), ImmutableList.of())))
                     );
