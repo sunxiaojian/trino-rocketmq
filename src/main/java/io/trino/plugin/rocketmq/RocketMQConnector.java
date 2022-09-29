@@ -15,7 +15,6 @@
 package io.trino.plugin.rocketmq;
 
 import io.airlift.bootstrap.LifeCycleManager;
-import io.trino.plugin.base.session.SessionPropertiesProvider;
 import io.trino.spi.connector.Connector;
 import io.trino.spi.connector.ConnectorMetadata;
 import io.trino.spi.connector.ConnectorPageSinkProvider;
@@ -23,8 +22,12 @@ import io.trino.spi.connector.ConnectorRecordSetProvider;
 import io.trino.spi.connector.ConnectorSession;
 import io.trino.spi.connector.ConnectorSplitManager;
 import io.trino.spi.connector.ConnectorTransactionHandle;
+import io.trino.spi.transaction.IsolationLevel;
 
 import javax.inject.Inject;
+
+import static io.trino.spi.transaction.IsolationLevel.READ_COMMITTED;
+import static io.trino.spi.transaction.IsolationLevel.checkConnectorSupports;
 
 /**
  * RocketMQ connector
@@ -50,6 +53,14 @@ public class RocketMQConnector implements Connector {
         this.pageSinkProvider = pageSinkProvider;
         this.recordSetProvider = recordSetProvider;
     }
+
+    @Override
+    public ConnectorTransactionHandle beginTransaction(IsolationLevel isolationLevel, boolean readOnly, boolean autoCommit)
+    {
+        checkConnectorSupports(READ_COMMITTED, isolationLevel);
+        return RocketMQTransactionHandle.INSTANCE;
+    }
+
 
     @Override
     public ConnectorMetadata getMetadata(ConnectorSession session, ConnectorTransactionHandle transactionHandle) {
