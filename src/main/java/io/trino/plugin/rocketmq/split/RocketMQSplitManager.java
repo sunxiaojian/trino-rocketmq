@@ -75,6 +75,8 @@ public class RocketMQSplitManager implements ConnectorSplitManager {
         try {
             TopicStatsTable topicStatsTable = adminClient.examineTopicStats(tableHandle.getTopicName());
             HashMap<MessageQueue, TopicOffset> offsets = topicStatsTable.getOffsetTable();
+            // admin shutdown
+            adminClient.shutdown();
 
             Optional<String> keyDataSchemaContents = contentSchemaReader.readKeyContentSchema(tableHandle);
             Optional<String> messageDataSchemaContents = contentSchemaReader.readValueContentSchema(tableHandle);
@@ -100,7 +102,7 @@ public class RocketMQSplitManager implements ConnectorSplitManager {
         } catch (RemotingException | MQClientException | InterruptedException | MQBrokerException e) {
             throw new RuntimeException(e);
         } finally {
-            adminClient.shutdown();
+
         }
         return new FixedSplitSource(splits.build());
     }

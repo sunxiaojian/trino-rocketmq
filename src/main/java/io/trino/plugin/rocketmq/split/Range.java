@@ -11,7 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.trino.plugin.rocketmq.split;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -24,35 +23,34 @@ import java.util.List;
 import static com.google.common.base.MoreObjects.toStringHelper;
 import static java.lang.Math.min;
 
-public class Range {
-    private static final long INSTANCE_SIZE = ClassLayout.parseClass(Range.class).instanceSize();
+public class Range
+{
+    private static final int INSTANCE_SIZE = ClassLayout.parseClass(Range.class).instanceSize();
 
-    /**
-     * begin offset
-     */
-    private final long begin;
-    /**
-     * end offset
-     */
-    private final long end;
+    private final long begin; // inclusive
+    private final long end; // exclusive
 
     @JsonCreator
-    public Range(@JsonProperty long begin, @JsonProperty long end) {
+    public Range(@JsonProperty("begin") long begin, @JsonProperty("end") long end)
+    {
         this.begin = begin;
         this.end = end;
     }
 
     @JsonProperty
-    public long getBegin() {
+    public long getBegin()
+    {
         return begin;
     }
 
     @JsonProperty
-    public long getEnd() {
+    public long getEnd()
+    {
         return end;
     }
 
-    public List<Range> partition(int partitionSize) {
+    public List<Range> partition(int partitionSize)
+    {
         ImmutableList.Builder<Range> partitions = ImmutableList.builder();
         long position = begin;
         while (position <= end) {
@@ -71,7 +69,8 @@ public class Range {
                 .toString();
     }
 
-    public long getRetainedSizeInBytes() {
+    public long getRetainedSizeInBytes()
+    {
         return INSTANCE_SIZE;
     }
 }

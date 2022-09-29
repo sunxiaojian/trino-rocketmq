@@ -148,7 +148,7 @@ public class RocketMQSplit implements ConnectorSplit {
                 .add("messageDataSchemaContents", messageDataSchemaContents)
                 .add("queueId", queueId)
                 .add("messagesRange", messagesRange)
-                .add("namesrv", nameSrvAddress)
+                .add("nameSrvAddress", nameSrvAddress)
                 .toString();
     }
 }
