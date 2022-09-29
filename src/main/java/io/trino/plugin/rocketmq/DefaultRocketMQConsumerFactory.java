@@ -39,6 +39,7 @@ public class DefaultRocketMQConsumerFactory implements RocketMQConsumerFactory{
         // disabled auto commit
         consumer.setAutoCommit(false);
         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
+        consumer.setConsumerGroup(config.getRmqConsumeGroup());
         return consumer;
     }
 

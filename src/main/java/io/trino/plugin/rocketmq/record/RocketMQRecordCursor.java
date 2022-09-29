@@ -96,10 +96,10 @@ public class RocketMQRecordCursor implements RecordCursor {
         this.messageQueue = new MessageQueue(split.getTopicName(), split.getBrokerName(), split.getQueueId());
         requireNonNull(consumerFactory, "consumerFactory is null");
 
-        defaultLitePullConsumer = consumerFactory.create(connectorSession);
-        defaultLitePullConsumer.setConsumerGroup(UUID.randomUUID().toString());
-        defaultLitePullConsumer.assign(ImmutableList.of(this.messageQueue));
         try {
+            defaultLitePullConsumer = consumerFactory.create(connectorSession);
+            defaultLitePullConsumer.start();
+            defaultLitePullConsumer.assign(ImmutableList.of(this.messageQueue));
             // consumer seek
             defaultLitePullConsumer.seek(this.messageQueue, split.getMessagesRange().getBegin());
         } catch (MQClientException e) {
