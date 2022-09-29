@@ -99,12 +99,15 @@ public class FileTableDescriptionSupplier implements Provider<TableDescriptionSu
                 else {
                     // A dummy table definition only supports the internal columns.
                     log.debug("Created dummy Table definition for %s", tableName);
-                    builder.put(tableName, new RocketMQTopicDescription(
-                            tableName.getTableName(),
-                            Optional.ofNullable(tableName.getSchemaName()),
-                            definedTable,
-                            Optional.of(new RocketMQTopicFieldGroup(DummyRowDecoder.NAME, Optional.empty(), Optional.empty(), ImmutableList.of())),
-                            Optional.of(new RocketMQTopicFieldGroup(DummyRowDecoder.NAME, Optional.empty(), Optional.empty(), ImmutableList.of()))));
+                    builder.put(
+                            tableName,
+                            new RocketMQTopicDescription(
+                                    tableName.getTableName(),
+                                    Optional.ofNullable(tableName.getSchemaName()),
+                                    tableName.getTableName(),
+                                    Optional.of(new RocketMQTopicFieldGroup(DummyRowDecoder.NAME, Optional.empty(), Optional.empty(), ImmutableList.of())),
+                                    Optional.of(new RocketMQTopicFieldGroup(DummyRowDecoder.NAME, Optional.empty(), Optional.empty(), ImmutableList.of())))
+                    );
                 }
             }
 
