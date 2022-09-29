@@ -43,7 +43,7 @@ public class RocketMQSplit implements ConnectorSplit {
     private final int queueId;
     private final String brokerName;
     private final Range messagesRange;
-    private final HostAddress namesrv;
+    private final HostAddress nameSrvAddress;
 
     @JsonCreator
     public RocketMQSplit( @JsonProperty("topicName") String topicName,
@@ -54,7 +54,7 @@ public class RocketMQSplit implements ConnectorSplit {
                           @JsonProperty("queueId") int queueId,
                           @JsonProperty("brokerName") String brokerName,
                           @JsonProperty("messagesRange") Range messagesRange,
-                          @JsonProperty("namesrv") HostAddress namesrv){
+                          @JsonProperty("nameSrvAddress") HostAddress nameSrvAddress){
 
         this.topicName = requireNonNull(topicName, "topicName is null");
         this.keyDataFormat = requireNonNull(keyDataFormat, "keyDataFormat is null");
@@ -64,7 +64,7 @@ public class RocketMQSplit implements ConnectorSplit {
         this.queueId = queueId;
         this.brokerName = brokerName;
         this.messagesRange = requireNonNull(messagesRange, "messagesRange is null");
-        this.namesrv = requireNonNull(namesrv, "namesrv is null");
+        this.nameSrvAddress = requireNonNull(nameSrvAddress, "namesrv is null");
     }
 
 
@@ -72,12 +72,10 @@ public class RocketMQSplit implements ConnectorSplit {
     public boolean isRemotelyAccessible() {
         return true;
     }
-
     @Override
     public List<HostAddress> getAddresses() {
-        return ImmutableList.of(namesrv);
+        return ImmutableList.of(nameSrvAddress);
     }
-
     @Override
     public Object getInfo() {
         return this;
@@ -116,8 +114,8 @@ public class RocketMQSplit implements ConnectorSplit {
     }
 
     @JsonProperty
-    public HostAddress getNamesrv() {
-        return namesrv;
+    public HostAddress getNameSrvAddress() {
+        return nameSrvAddress;
     }
 
     @JsonProperty
@@ -135,7 +133,7 @@ public class RocketMQSplit implements ConnectorSplit {
                 + sizeOf(keyDataSchemaContents, SizeOf::estimatedSizeOf)
                 + sizeOf(messageDataSchemaContents, SizeOf::estimatedSizeOf)
                 + messagesRange.getRetainedSizeInBytes()
-                + namesrv.getRetainedSizeInBytes();
+                + nameSrvAddress.getRetainedSizeInBytes();
     }
 
 
@@ -150,7 +148,7 @@ public class RocketMQSplit implements ConnectorSplit {
                 .add("messageDataSchemaContents", messageDataSchemaContents)
                 .add("queueId", queueId)
                 .add("messagesRange", messagesRange)
-                .add("namesrv", namesrv)
+                .add("namesrv", nameSrvAddress)
                 .toString();
     }
 }
