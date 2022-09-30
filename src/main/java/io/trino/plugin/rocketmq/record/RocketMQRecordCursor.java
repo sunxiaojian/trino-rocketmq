@@ -1,9 +1,12 @@
 /*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,13 +39,12 @@ import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.common.message.MessageQueue;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static io.trino.decoder.FieldValueProviders.bytesValueProvider;
@@ -72,14 +74,10 @@ public class RocketMQRecordCursor implements RecordCursor {
     private final MessageQueue messageQueue;
     private final DefaultLitePullConsumer defaultLitePullConsumer;
     private final List<RocketMQColumnHandle> columnHandles;
-
-    private Iterator<MessageExt> records = emptyIterator();
-
     private final RowDecoder keyDecoder;
     private final RowDecoder messageDecoder;
-
     private final FieldValueProvider[] currentRowValues;
-
+    private Iterator<MessageExt> records = emptyIterator();
     // calc all bytes
     private long completedBytes;
 
@@ -91,7 +89,7 @@ public class RocketMQRecordCursor implements RecordCursor {
             RowDecoder keyDecoder,
             RowDecoder messageDecoder
 
-    ){
+    ) {
         this.split = requireNonNull(split, "split is null");
         this.messageQueue = new MessageQueue(split.getTopicName(), split.getBrokerName(), split.getQueueId());
         requireNonNull(consumerFactory, "consumerFactory is null");
@@ -112,6 +110,41 @@ public class RocketMQRecordCursor implements RecordCursor {
         this.keyDecoder = keyDecoder;
         // message decoder
         this.messageDecoder = messageDecoder;
+    }
+
+    public static FieldValueProvider propertiesValueProvider(MapType varcharMapType, Map<String, String> props) {
+        Type keyType = varcharMapType.getTypeParameters().get(0);
+        Type valueArrayType = varcharMapType.getTypeParameters().get(1);
+        Type valueType = valueArrayType.getTypeParameters().get(0);
+
+        BlockBuilder mapBlockBuilder = varcharMapType.createBlockBuilder(null, 1);
+        BlockBuilder builder = mapBlockBuilder.beginBlockEntry();
+
+        // Group by keys and collect values as array.
+        Multimap<String, String> headerMap = ArrayListMultimap.create();
+        for (Map.Entry<String, String> propEntry : props.entrySet()) {
+            headerMap.put(propEntry.getKey(), propEntry.getValue());
+        }
+        for (String headerKey : headerMap.keySet()) {
+            writeNativeValue(keyType, builder, headerKey);
+            BlockBuilder arrayBuilder = builder.beginBlockEntry();
+            for (String value : headerMap.get(headerKey)) {
+                writeNativeValue(valueType, arrayBuilder, value);
+            }
+            builder.closeEntry();
+        }
+        mapBlockBuilder.closeEntry();
+        return new FieldValueProvider() {
+            @Override
+            public boolean isNull() {
+                return false;
+            }
+
+            @Override
+            public Block getBlock() {
+                return varcharMapType.getObject(mapBlockBuilder, 0);
+            }
+        };
     }
 
     @Override
@@ -154,11 +187,7 @@ public class RocketMQRecordCursor implements RecordCursor {
 
         byte[] keyData = new byte[0];
         if (message.getKeys() != null) {
-            try {
-                keyData = message.getKeys().getBytes("UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
+            keyData = message.getKeys().getBytes(StandardCharsets.UTF_8);
         }
 
         byte[] messageData = new byte[0];
@@ -219,44 +248,6 @@ public class RocketMQRecordCursor implements RecordCursor {
         return true; // Advanced successfully.
     }
 
-    public static FieldValueProvider propertiesValueProvider(MapType varcharMapType, Map<String, String> props)
-    {
-        Type keyType = varcharMapType.getTypeParameters().get(0);
-        Type valueArrayType = varcharMapType.getTypeParameters().get(1);
-        Type valueType = valueArrayType.getTypeParameters().get(0);
-
-        BlockBuilder mapBlockBuilder = varcharMapType.createBlockBuilder(null, 1);
-        BlockBuilder builder = mapBlockBuilder.beginBlockEntry();
-
-        // Group by keys and collect values as array.
-        Multimap<String, String> headerMap = ArrayListMultimap.create();
-        for (Map.Entry<String, String> propEntry : props.entrySet()) {
-            headerMap.put(propEntry.getKey(), propEntry.getValue());
-        }
-        for (String headerKey : headerMap.keySet()) {
-            writeNativeValue(keyType, builder, headerKey);
-            BlockBuilder arrayBuilder = builder.beginBlockEntry();
-            for (String value : headerMap.get(headerKey)) {
-                writeNativeValue(valueType, arrayBuilder, value);
-            }
-            builder.closeEntry();
-        }
-        mapBlockBuilder.closeEntry();
-        return new FieldValueProvider() {
-            @Override
-            public boolean isNull()
-            {
-                return false;
-            }
-            @Override
-            public Block getBlock()
-            {
-                return varcharMapType.getObject(mapBlockBuilder, 0);
-            }
-        };
-    }
-
-
     @Override
     public boolean getBoolean(int field) {
         return getFieldValueProvider(field, boolean.class).getBoolean();
@@ -287,8 +278,6 @@ public class RocketMQRecordCursor implements RecordCursor {
         checkArgument(field < columnHandles.size(), "Invalid field index");
         return currentRowValues[field] == null || currentRowValues[field].isNull();
     }
-
-
 
 
     @Override

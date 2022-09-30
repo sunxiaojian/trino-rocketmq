@@ -1,9 +1,12 @@
 /*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -51,9 +54,14 @@ public class RocketMQRecordSetProvider implements ConnectorRecordSetProvider {
         this.consumerFactory = requireNonNull(consumerFactory, "consumerFactory is null");
     }
 
+    private static Map<String, String> getDecoderParameters(Optional<String> dataSchema) {
+        ImmutableMap.Builder<String, String> parameters = ImmutableMap.builder();
+        dataSchema.ifPresent(schema -> parameters.put("dataSchema", schema));
+        return parameters.buildOrThrow();
+    }
+
     @Override
-    public RecordSet getRecordSet(ConnectorTransactionHandle transaction, ConnectorSession session, ConnectorSplit split, ConnectorTableHandle table, List<? extends ColumnHandle> columns)
-    {
+    public RecordSet getRecordSet(ConnectorTransactionHandle transaction, ConnectorSession session, ConnectorSplit split, ConnectorTableHandle table, List<? extends ColumnHandle> columns) {
         RocketMQSplit rocketMQSplit = (RocketMQSplit) split;
 
         List<RocketMQColumnHandle> rocketMQColumnHandles = columns.stream()
@@ -77,12 +85,5 @@ public class RocketMQRecordSetProvider implements ConnectorRecordSetProvider {
                         .collect(toImmutableSet()));
 
         return new RocketMQRecordSet(rocketMQSplit, consumerFactory, rocketMQColumnHandles, session, keyDecoder, messageDecoder);
-    }
-
-    private static Map<String, String> getDecoderParameters(Optional<String> dataSchema)
-    {
-        ImmutableMap.Builder<String, String> parameters = ImmutableMap.builder();
-        dataSchema.ifPresent(schema -> parameters.put("dataSchema", schema));
-        return parameters.buildOrThrow();
     }
 }

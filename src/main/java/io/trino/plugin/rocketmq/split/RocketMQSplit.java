@@ -1,9 +1,12 @@
 /*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -46,15 +49,15 @@ public class RocketMQSplit implements ConnectorSplit {
     private final HostAddress nameSrvAddress;
 
     @JsonCreator
-    public RocketMQSplit( @JsonProperty("topicName") String topicName,
-                          @JsonProperty("keyDataFormat") String keyDataFormat,
-                          @JsonProperty("messageDataFormat") String messageDataFormat,
-                          @JsonProperty("keyDataSchemaContents") Optional<String> keyDataSchemaContents,
-                          @JsonProperty("messageDataSchemaContents") Optional<String> messageDataSchemaContents,
-                          @JsonProperty("queueId") int queueId,
-                          @JsonProperty("brokerName") String brokerName,
-                          @JsonProperty("messagesRange") Range messagesRange,
-                          @JsonProperty("nameSrvAddress") HostAddress nameSrvAddress){
+    public RocketMQSplit(@JsonProperty("topicName") String topicName,
+                         @JsonProperty("keyDataFormat") String keyDataFormat,
+                         @JsonProperty("messageDataFormat") String messageDataFormat,
+                         @JsonProperty("keyDataSchemaContents") Optional<String> keyDataSchemaContents,
+                         @JsonProperty("messageDataSchemaContents") Optional<String> messageDataSchemaContents,
+                         @JsonProperty("queueId") int queueId,
+                         @JsonProperty("brokerName") String brokerName,
+                         @JsonProperty("messagesRange") Range messagesRange,
+                         @JsonProperty("nameSrvAddress") HostAddress nameSrvAddress) {
 
         this.topicName = requireNonNull(topicName, "topicName is null");
         this.keyDataFormat = requireNonNull(keyDataFormat, "keyDataFormat is null");
@@ -72,10 +75,12 @@ public class RocketMQSplit implements ConnectorSplit {
     public boolean isRemotelyAccessible() {
         return true;
     }
+
     @Override
     public List<HostAddress> getAddresses() {
         return ImmutableList.of(nameSrvAddress);
     }
+
     @Override
     public Object getInfo() {
         return this;
@@ -85,14 +90,17 @@ public class RocketMQSplit implements ConnectorSplit {
     public String getTopicName() {
         return topicName;
     }
+
     @JsonProperty
     public String getKeyDataFormat() {
         return keyDataFormat;
     }
+
     @JsonProperty
     public String getMessageDataFormat() {
         return messageDataFormat;
     }
+
     @JsonProperty
     public Optional<String> getKeyDataSchemaContents() {
         return keyDataSchemaContents;
@@ -138,8 +146,7 @@ public class RocketMQSplit implements ConnectorSplit {
 
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return toStringHelper(this)
                 .add("topicName", topicName)
                 .add("keyDataFormat", keyDataFormat)

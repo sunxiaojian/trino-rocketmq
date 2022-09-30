@@ -1,9 +1,12 @@
 /*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,25 +34,12 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Locale.ENGLISH;
 
 public class FileContentSchemaReader extends AbstractContentSchemaReader {
-    @Override
-    protected Optional<String> readSchema(Optional<String> dataSchemaLocation, Optional<String> subject)
-    {
-        if (!dataSchemaLocation.isPresent()) {
-            return Optional.empty();
-        }
-        try (InputStream inputStream = openSchemaLocation(dataSchemaLocation.get())) {
-            return Optional.of(CharStreams.toString(new InputStreamReader(inputStream, UTF_8)));
-        }
-        catch (IOException e) {
-            throw new TrinoException(GENERIC_INTERNAL_ERROR, "Could not parse the Avro schema at: " + dataSchemaLocation, e);
-        }
-    }
-
     private static InputStream openSchemaLocation(String dataSchemaLocation) throws IOException {
         if (isURI(dataSchemaLocation.trim().toLowerCase(ENGLISH))) {
             try {
                 return new URL(dataSchemaLocation).openStream();
-            } catch (MalformedURLException ignore) {}
+            } catch (MalformedURLException ignore) {
+            }
         }
         return new FileInputStream(dataSchemaLocation);
     }
@@ -61,5 +51,17 @@ public class FileContentSchemaReader extends AbstractContentSchemaReader {
             return false;
         }
         return true;
+    }
+
+    @Override
+    protected Optional<String> readSchema(Optional<String> dataSchemaLocation, Optional<String> subject) {
+        if (!dataSchemaLocation.isPresent()) {
+            return Optional.empty();
+        }
+        try (InputStream inputStream = openSchemaLocation(dataSchemaLocation.get())) {
+            return Optional.of(CharStreams.toString(new InputStreamReader(inputStream, UTF_8)));
+        } catch (IOException e) {
+            throw new TrinoException(GENERIC_INTERNAL_ERROR, "Could not parse the Avro schema at: " + dataSchemaLocation, e);
+        }
     }
 }

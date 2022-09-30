@@ -1,9 +1,12 @@
 /*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,7 +30,6 @@ import io.trino.spi.connector.ConnectorTransactionHandle;
 import io.trino.spi.connector.Constraint;
 import io.trino.spi.connector.DynamicFilter;
 import io.trino.spi.connector.FixedSplitSource;
-import org.apache.rocketmq.client.consumer.DefaultLitePullConsumer;
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.admin.TopicOffset;
@@ -37,7 +39,6 @@ import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.apache.rocketmq.tools.admin.DefaultMQAdminExt;
 
 import javax.inject.Inject;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +81,7 @@ public class RocketMQSplitManager implements ConnectorSplitManager {
 
             Optional<String> keyDataSchemaContents = contentSchemaReader.readKeyContentSchema(tableHandle);
             Optional<String> messageDataSchemaContents = contentSchemaReader.readValueContentSchema(tableHandle);
-            for (Map.Entry<MessageQueue, TopicOffset> offset : offsets.entrySet()){
+            for (Map.Entry<MessageQueue, TopicOffset> offset : offsets.entrySet()) {
                 // build rocketmq split
                 MessageQueue queue = offset.getKey();
                 TopicOffset topicOffset = offset.getValue();

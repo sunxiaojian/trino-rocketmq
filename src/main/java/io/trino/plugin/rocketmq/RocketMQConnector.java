@@ -1,9 +1,12 @@
 /*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,7 +41,8 @@ public class RocketMQConnector implements Connector {
     private final ConnectorMetadata metadata;
     private final ConnectorSplitManager splitManager;
     private final ConnectorPageSinkProvider pageSinkProvider;
-    private final  ConnectorRecordSetProvider recordSetProvider;
+    private final ConnectorRecordSetProvider recordSetProvider;
+
     @Inject
     public RocketMQConnector(
             LifeCycleManager lifeCycleManager,
@@ -46,7 +50,7 @@ public class RocketMQConnector implements Connector {
             ConnectorSplitManager connectorSplitManager,
             ConnectorRecordSetProvider recordSetProvider,
             ConnectorPageSinkProvider pageSinkProvider
-    ){
+    ) {
         this.lifeCycleManager = lifeCycleManager;
         this.metadata = connectorMetadata;
         this.splitManager = connectorSplitManager;
@@ -55,8 +59,7 @@ public class RocketMQConnector implements Connector {
     }
 
     @Override
-    public ConnectorTransactionHandle beginTransaction(IsolationLevel isolationLevel, boolean readOnly, boolean autoCommit)
-    {
+    public ConnectorTransactionHandle beginTransaction(IsolationLevel isolationLevel, boolean readOnly, boolean autoCommit) {
         checkConnectorSupports(READ_COMMITTED, isolationLevel);
         return RocketMQTransactionHandle.INSTANCE;
     }

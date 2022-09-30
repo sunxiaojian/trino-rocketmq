@@ -1,9 +1,12 @@
 /*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -65,10 +68,14 @@ public class RocketMQMetadata implements ConnectorMetadata {
     @Inject
     public RocketMQMetadata(RocketMQConfig config,
                             RocketMQInternalFieldManager rocketMQInternalFieldManager,
-                            TableDescriptionSupplier tableDescriptionSupplier){
+                            TableDescriptionSupplier tableDescriptionSupplier) {
         this.hideInternalColumns = config.isHideInternalColumns();
         this.rocketMQInternalFieldManager = rocketMQInternalFieldManager;
         this.tableDescriptionSupplier = tableDescriptionSupplier;
+    }
+
+    private static String getDataFormat(Optional<RocketMQTopicFieldGroup> fieldGroup) {
+        return fieldGroup.map(RocketMQTopicFieldGroup::getDataFormat).orElse(DummyRowDecoder.NAME);
     }
 
     @Override
@@ -79,13 +86,12 @@ public class RocketMQMetadata implements ConnectorMetadata {
     }
 
     @Override
-    public RocketMQTableHandle getTableHandle(ConnectorSession session, SchemaTableName schemaTableName)
-    {
+    public RocketMQTableHandle getTableHandle(ConnectorSession session, SchemaTableName schemaTableName) {
         return getTopicDescription(session, schemaTableName)
                 .map(rocketMQTopicDescription -> new RocketMQTableHandle(
                         schemaTableName.getSchemaName(),
                         schemaTableName.getTableName(),
-                                rocketMQTopicDescription.getTopicName(),
+                        rocketMQTopicDescription.getTopicName(),
                         getDataFormat(rocketMQTopicDescription.getKey()),
                         getDataFormat(rocketMQTopicDescription.getMessage()),
                         rocketMQTopicDescription.getKey().flatMap(RocketMQTopicFieldGroup::getDataSchema),
@@ -99,20 +105,13 @@ public class RocketMQMetadata implements ConnectorMetadata {
                 .orElse(null);
     }
 
-    private static String getDataFormat(Optional<RocketMQTopicFieldGroup> fieldGroup)
-    {
-        return fieldGroup.map(RocketMQTopicFieldGroup::getDataFormat).orElse(DummyRowDecoder.NAME);
-    }
-
     @Override
-    public ConnectorTableMetadata getTableMetadata(ConnectorSession session, ConnectorTableHandle tableHandle)
-    {
+    public ConnectorTableMetadata getTableMetadata(ConnectorSession session, ConnectorTableHandle tableHandle) {
         return getTableMetadata(session, ((RocketMQTableHandle) tableHandle).toSchemaTableName());
     }
 
     @Override
-    public List<SchemaTableName> listTables(ConnectorSession session, Optional<String> schemaName)
-    {
+    public List<SchemaTableName> listTables(ConnectorSession session, Optional<String> schemaName) {
         return tableDescriptionSupplier.listTables().stream()
                 .filter(tableName -> schemaName.map(tableName.getSchemaName()::equals).orElse(true))
                 .collect(toImmutableList());
@@ -123,8 +122,7 @@ public class RocketMQMetadata implements ConnectorMetadata {
         return getColumnHandles(session, ((RocketMQTableHandle) tableHandle).toSchemaTableName());
     }
 
-    private Map<String, ColumnHandle> getColumnHandles(ConnectorSession session, SchemaTableName schemaTableName)
-    {
+    private Map<String, ColumnHandle> getColumnHandles(ConnectorSession session, SchemaTableName schemaTableName) {
         RocketMQTopicDescription rocketMQTopicDescription = getRequiredTopicDescription(session, schemaTableName);
         ImmutableMap.Builder<String, ColumnHandle> columnHandles = ImmutableMap.builder();
         AtomicInteger index = new AtomicInteger(0);
@@ -154,8 +152,7 @@ public class RocketMQMetadata implements ConnectorMetadata {
     }
 
     @Override
-    public Map<SchemaTableName, List<ColumnMetadata>> listTableColumns(ConnectorSession session, SchemaTablePrefix prefix)
-    {
+    public Map<SchemaTableName, List<ColumnMetadata>> listTableColumns(ConnectorSession session, SchemaTablePrefix prefix) {
         requireNonNull(prefix, "prefix is null");
 
         ImmutableMap.Builder<SchemaTableName, List<ColumnMetadata>> columns = ImmutableMap.builder();
@@ -169,7 +166,8 @@ public class RocketMQMetadata implements ConnectorMetadata {
         for (SchemaTableName tableName : tableNames) {
             try {
                 columns.put(tableName, getTableMetadata(session, tableName).getColumns());
-            } catch (TableNotFoundException e) {}
+            } catch (TableNotFoundException e) {
+            }
         }
         return columns.buildOrThrow();
     }
@@ -208,14 +206,12 @@ public class RocketMQMetadata implements ConnectorMetadata {
     }
 
     @Override
-    public ConnectorTableProperties getTableProperties(ConnectorSession session, ConnectorTableHandle table)
-    {
+    public ConnectorTableProperties getTableProperties(ConnectorSession session, ConnectorTableHandle table) {
         return new ConnectorTableProperties();
     }
 
     @Override
-    public Optional<ConstraintApplicationResult<ConnectorTableHandle>> applyFilter(ConnectorSession session, ConnectorTableHandle table, Constraint constraint)
-    {
+    public Optional<ConstraintApplicationResult<ConnectorTableHandle>> applyFilter(ConnectorSession session, ConnectorTableHandle table, Constraint constraint) {
         RocketMQTableHandle handle = (RocketMQTableHandle) table;
         TupleDomain<ColumnHandle> oldDomain = handle.getConstraint();
         TupleDomain<ColumnHandle> newDomain = oldDomain.intersect(constraint.getSummary());
@@ -239,19 +235,16 @@ public class RocketMQMetadata implements ConnectorMetadata {
         return Optional.of(new ConstraintApplicationResult<>(handle, constraint.getSummary(), false));
     }
 
-    private RocketMQTopicDescription getRequiredTopicDescription(ConnectorSession session, SchemaTableName schemaTableName)
-    {
+    private RocketMQTopicDescription getRequiredTopicDescription(ConnectorSession session, SchemaTableName schemaTableName) {
         return getTopicDescription(session, schemaTableName).orElseThrow(() -> new TableNotFoundException(schemaTableName));
     }
 
-    private Optional<RocketMQTopicDescription> getTopicDescription(ConnectorSession session, SchemaTableName schemaTableName)
-    {
+    private Optional<RocketMQTopicDescription> getTopicDescription(ConnectorSession session, SchemaTableName schemaTableName) {
         return tableDescriptionSupplier.getTopicDescription(session, schemaTableName);
     }
 
     @Override
-    public ConnectorInsertTableHandle beginInsert(ConnectorSession session, ConnectorTableHandle tableHandle, List<ColumnHandle> columns, RetryMode retryMode)
-    {
+    public ConnectorInsertTableHandle beginInsert(ConnectorSession session, ConnectorTableHandle tableHandle, List<ColumnHandle> columns, RetryMode retryMode) {
         if (retryMode != NO_RETRIES) {
             throw new TrinoException(NOT_SUPPORTED, "This connector does not support query retries");
         }
