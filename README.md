@@ -47,8 +47,8 @@ mv target/trino-rocketmq-397/* $PWD/trino/plugin/rocketmq
 mv target/trino-rocketmq-397.jar $PWD/trino/plugin/rocketmq
 ```
 #### 增加配置
-
-> 参考配置 [xxx]()
+**配置文件存放在 $PWD/trino/etc 路径下**
+> 参考配置 [catalog](https://github.com/sunxiaojian/trino-rocketmq/tree/main/config)
 
 ## 启动
 
@@ -62,9 +62,36 @@ mv target/trino-rocketmq-397.jar $PWD/trino/plugin/rocketmq
 ```
 
 ## 测试
+```
+docker exec -it trino trino --catalog rocketmq --schema default
+trino:default> show tables;
+  Table
+----------
+ customer
+(1 row)
+
+Query 20220930_071816_00012_aem7m, FINISHED, 1 node
+Splits: 7 total, 7 done (100.00%)
+0.36 [1 rows, 25B] [2 rows/s, 70B/s]
+
+trino:default> select * from customer;
+ _queue_id | _queue_offset | _message | _message_length | _key | _key_length | _timestamp | _properties
+-----------+---------------+----------+-----------------+------+-------------+------------+-------------
+(0 rows)
+
+Query 20220930_071847_00013_aem7m, FINISHED, 1 node
+Splits: 8 total, 8 done (100.00%)
+0.60 [0 rows, 0B] [0 rows/s, 0B/s]
+```
 
 ## 基于 file schema 测试
-
+```
+ 待支持
+```
 ## 基于 rocketmq schema registry 测试
+
+```
+ 待支持
+```
 
 
