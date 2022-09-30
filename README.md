@@ -5,5 +5,5 @@ Trino:  [文档中心](https://trino.io/)
 
 RocketMQ:  [文档中心](https://rocketmq.apache.org/)
 # 架构介绍
-
+![img.png](img.png)
 # 快速开始
