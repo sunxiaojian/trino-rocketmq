@@ -1,2 +1,2 @@
-# [Trino](https://trino.io/) ON [RocketMQ](https://rocketmq.apache.org/)
+# [Trino](https://trino.io/) on [RocketMQ](https://rocketmq.apache.org/)
 Plug in that supports reading rocketmq data in Trino
