@@ -102,6 +102,7 @@ public class RocketMQRecordCursor implements RecordCursor {
             defaultLitePullConsumer.getOffsetStore().updateOffset(this.messageQueue, split.getMessagesRange().getBegin(), true );
             // consumer seek
             defaultLitePullConsumer.seek(this.messageQueue, split.getMessagesRange().getBegin());
+
         } catch (MQClientException e) {
             throw new RuntimeException(e);
         }

@@ -18,8 +18,11 @@
 package io.trino.plugin.rocketmq.split;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import io.trino.plugin.rocketmq.RocketMQConfig;
 import io.trino.plugin.rocketmq.RocketMQConsumerFactory;
+import io.trino.plugin.rocketmq.RocketMQFilterManager;
+import io.trino.plugin.rocketmq.RocketMQFilterResult;
 import io.trino.plugin.rocketmq.RocketMQTableHandle;
 import io.trino.plugin.rocketmq.schema.ContentSchemaReader;
 import io.trino.spi.connector.ConnectorSession;
@@ -55,11 +58,14 @@ public class RocketMQSplitManager implements ConnectorSplitManager {
     private final ContentSchemaReader contentSchemaReader;
     private final int messagesPerSplit;
 
+    private final RocketMQFilterManager filterManager;
+
     @Inject
-    public RocketMQSplitManager(RocketMQConsumerFactory consumerFactory, RocketMQConfig config, ContentSchemaReader contentSchemaReader) {
+    public RocketMQSplitManager(RocketMQConsumerFactory consumerFactory, RocketMQConfig config, ContentSchemaReader contentSchemaReader, RocketMQFilterManager filterManager) {
         this.consumerFactory = requireNonNull(consumerFactory, "consumerFactory is null");
         this.messagesPerSplit = config.getMessagesPerSplit();
         this.contentSchemaReader = requireNonNull(contentSchemaReader, "contentSchemaReader is null");
+        this.filterManager = requireNonNull(filterManager, "filterManager is null");
     }
 
     @Override
@@ -74,6 +80,7 @@ public class RocketMQSplitManager implements ConnectorSplitManager {
         RocketMQTableHandle tableHandle = (RocketMQTableHandle) table;
         DefaultMQAdminExt adminClient = consumerFactory.admin(session);
         try {
+
             TopicStatsTable topicStatsTable = adminClient.examineTopicStats(tableHandle.getTopicName());
             HashMap<MessageQueue, TopicOffset> offsets = topicStatsTable.getOffsetTable();
             // admin shutdown
@@ -81,7 +88,9 @@ public class RocketMQSplitManager implements ConnectorSplitManager {
 
             Optional<String> keyDataSchemaContents = contentSchemaReader.readKeyContentSchema(tableHandle);
             Optional<String> messageDataSchemaContents = contentSchemaReader.readValueContentSchema(tableHandle);
-            for (Map.Entry<MessageQueue, TopicOffset> offset : offsets.entrySet()) {
+
+            RocketMQFilterResult filterResult= filterManager.filter(session, tableHandle, Lists.newArrayList(offsets.keySet()),  offsets);
+            for (Map.Entry<MessageQueue, TopicOffset> offset : filterResult.getMessageQueueTopicOffsets().entrySet()) {
                 // build rocketmq split
                 MessageQueue queue = offset.getKey();
                 TopicOffset topicOffset = offset.getValue();
@@ -102,8 +111,6 @@ public class RocketMQSplitManager implements ConnectorSplitManager {
 
         } catch (RemotingException | MQClientException | InterruptedException | MQBrokerException e) {
             throw new RuntimeException(e);
-        } finally {
-
         }
         return new FixedSplitSource(splits.build());
     }

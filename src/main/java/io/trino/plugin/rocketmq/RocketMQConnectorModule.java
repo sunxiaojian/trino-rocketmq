@@ -54,6 +54,7 @@ public class RocketMQConnectorModule
         binder.bind(ConnectorPageSinkProvider.class).to(ClassLoaderSafeConnectorPageSinkProvider.class).in(Scopes.SINGLETON);
         binder.bind(RocketMQConnector.class).in(Scopes.SINGLETON);
         binder.bind(RocketMQInternalFieldManager.class).in(Scopes.SINGLETON);
+        binder.bind(RocketMQFilterManager.class).in(Scopes.SINGLETON);
 
         // build config
         configBinder(binder).bindConfig(RocketMQConfig.class);
