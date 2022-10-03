@@ -22,7 +22,7 @@ import com.google.common.collect.Lists;
 import io.trino.plugin.rocketmq.RocketMQConfig;
 import io.trino.plugin.rocketmq.RocketMQConsumerFactory;
 import io.trino.plugin.rocketmq.RocketMQFilterManager;
-import io.trino.plugin.rocketmq.RocketMQFilterResult;
+import io.trino.plugin.rocketmq.RocketMQFilteringResult;
 import io.trino.plugin.rocketmq.RocketMQTableHandle;
 import io.trino.plugin.rocketmq.schema.ContentSchemaReader;
 import io.trino.spi.connector.ConnectorSession;
@@ -89,7 +89,7 @@ public class RocketMQSplitManager implements ConnectorSplitManager {
             Optional<String> keyDataSchemaContents = contentSchemaReader.readKeyContentSchema(tableHandle);
             Optional<String> messageDataSchemaContents = contentSchemaReader.readValueContentSchema(tableHandle);
 
-            RocketMQFilterResult filterResult= filterManager.filter(session, tableHandle, Lists.newArrayList(offsets.keySet()),  offsets);
+            RocketMQFilteringResult filterResult= filterManager.filter(session, tableHandle, Lists.newArrayList(offsets.keySet()),  offsets);
             for (Map.Entry<MessageQueue, TopicOffset> offset : filterResult.getMessageQueueTopicOffsets().entrySet()) {
                 // build rocketmq split
                 MessageQueue queue = offset.getKey();

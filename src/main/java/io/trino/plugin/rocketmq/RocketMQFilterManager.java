@@ -75,10 +75,10 @@ public class RocketMQFilterManager {
      * @param messageQueueTopicOffsets
      * @return
      */
-    public RocketMQFilterResult filter(ConnectorSession session,
-                                       RocketMQTableHandle rocketMQTableHandle,
-                                       List<MessageQueue> messageQueues,
-                                       Map<MessageQueue, TopicOffset> messageQueueTopicOffsets){
+    public RocketMQFilteringResult filter(ConnectorSession session,
+                                          RocketMQTableHandle rocketMQTableHandle,
+                                          List<MessageQueue> messageQueues,
+                                          Map<MessageQueue, TopicOffset> messageQueueTopicOffsets){
         requireNonNull(session, "session is null");
         requireNonNull(rocketMQTableHandle, "Rocketmq table handle is null");
         requireNonNull(messageQueues, "Message queues is null");
@@ -158,10 +158,10 @@ public class RocketMQFilterManager {
                     .filter(messageQueue -> finalMessageQueueIdsFiltered.contains((long) messageQueue.getQueueId()))
                     .collect(toImmutableList());
             overrideMessageQueueOffsets(messageQueueTopicOffsets, messageQueueBeginOffsets, messageQueueEndOffsets);
-            return new RocketMQFilterResult(messageQueueFilteredInfos, messageQueueTopicOffsets);
+            return new RocketMQFilteringResult(messageQueueFilteredInfos, messageQueueTopicOffsets);
         }
         overrideMessageQueueOffsets(messageQueueTopicOffsets, messageQueueBeginOffsets, messageQueueEndOffsets);
-        return new RocketMQFilterResult(messageQueues, messageQueueTopicOffsets);
+        return new RocketMQFilteringResult(messageQueues, messageQueueTopicOffsets);
 
     }
 

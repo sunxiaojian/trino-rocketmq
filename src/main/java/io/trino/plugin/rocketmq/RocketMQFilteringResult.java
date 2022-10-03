@@ -26,12 +26,12 @@ import java.util.Map;
 /**
  * rocketmq filter result
  */
-public class RocketMQFilterResult {
+public class RocketMQFilteringResult {
 
     private final List<MessageQueue> messageQueues;
     private final Map<MessageQueue, TopicOffset> messageQueueTopicOffsets;
 
-    public RocketMQFilterResult(List<MessageQueue> messageQueues, Map<MessageQueue, TopicOffset> messageQueueTopicOffsets){
+    public RocketMQFilteringResult(List<MessageQueue> messageQueues, Map<MessageQueue, TopicOffset> messageQueueTopicOffsets){
         this.messageQueues = messageQueues;
         this.messageQueueTopicOffsets = messageQueueTopicOffsets;
     }
