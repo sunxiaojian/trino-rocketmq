@@ -45,7 +45,6 @@ import java.util.stream.Collectors;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static com.google.common.collect.Iterables.getOnlyElement;
 import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.OFFSET_TIMESTAMP_FIELD;
 import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.QUEUE_ID_FIELD;
 import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.QUEUE_OFFSET_FIELD;
@@ -138,11 +137,11 @@ public class RocketMQFilterManager {
                     if (offsetTimestampRanged.get().getBegin() > INVALID_RANGE_INDEX) {
                         messageQueueBeginOffsets = overrideMessageQueueBeginOffsets(
                                 messageQueueBeginOffsets,
-                                messageQueue -> findOffsetsForTimestampGreaterOrEqual(rocketMQAdmin, messageQueue, finalOffsetTimestampRanged.get().getBegin()));
+                                messageQueue -> findOffsetsForTimestamp(rocketMQAdmin, messageQueue, finalOffsetTimestampRanged.get().getBegin()));
                     }
                     if (offsetTimestampRanged.get().getEnd() > INVALID_RANGE_INDEX) {
                         messageQueueEndOffsets = overrideMessageQueueEndOffsets(messageQueueEndOffsets,
-                                messageQueue -> findOffsetsForTimestampGreaterOrEqual(rocketMQAdmin, messageQueue, finalOffsetTimestampRanged.get().getEnd()));
+                                messageQueue -> findOffsetsForTimestamp(rocketMQAdmin, messageQueue, finalOffsetTimestampRanged.get().getEnd()));
                     }
                     if (rocketMQAdmin != null){
                         rocketMQAdmin.shutdown();
@@ -225,7 +224,7 @@ public class RocketMQFilterManager {
     }
 
 
-    private static Optional<Long> findOffsetsForTimestampGreaterOrEqual(DefaultMQAdminExt adminExt, MessageQueue messageQueue, long timestamp) {
+    private static Optional<Long> findOffsetsForTimestamp(DefaultMQAdminExt adminExt, MessageQueue messageQueue, long timestamp) {
         final long transferTimestamp = floorDiv(timestamp, MICROSECONDS_PER_MILLISECOND);
         try {
             List<RollbackStats> rollbackStats = adminExt.resetOffsetByTimestampOld(adminExt.getAdminExtGroup(), messageQueue.getTopic(), transferTimestamp, true);

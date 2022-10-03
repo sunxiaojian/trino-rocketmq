@@ -40,23 +40,15 @@ import static java.util.Objects.requireNonNull;
 public class RocketMQInternalFieldManager {
 
     public static final String QUEUE_ID_FIELD = "_queue_id";
-
     public static final String BROKER_NAME = "_broker_name";
-
     public static final String QUEUE_OFFSET_FIELD = "_queue_offset";
-
     public static final String MSG_ID = "_msg_id";
     public static final String MESSAGE_FIELD = "_message";
     public static final String MESSAGE_LENGTH_FIELD = "_message_length";
-
     public static final String KEY_FIELD = "_key";
-
     public static final String KEY_LENGTH_FIELD = "_key_length";
-
     public static final String OFFSET_TIMESTAMP_FIELD = "_timestamp";
-
     public static final String MESSAGE_PROPERTIES = "_properties";
-
     private final Map<String, InternalField> internalFields;
 
     @Inject
@@ -69,6 +61,10 @@ public class RocketMQInternalFieldManager {
                         QUEUE_ID_FIELD,
                         "Queue Id",
                         BigintType.BIGINT))
+                .put(BROKER_NAME, new InternalField(
+                        BROKER_NAME,
+                        "Broker name",
+                        createUnboundedVarcharType()))
                 .put(QUEUE_OFFSET_FIELD, new InternalField(
                         QUEUE_OFFSET_FIELD,
                         "Offset for the message within the MessageQueue",

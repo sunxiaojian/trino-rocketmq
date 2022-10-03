@@ -49,6 +49,7 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkArgument;
 import static io.trino.decoder.FieldValueProviders.bytesValueProvider;
 import static io.trino.decoder.FieldValueProviders.longValueProvider;
+import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.BROKER_NAME;
 import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.KEY_FIELD;
 import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.KEY_LENGTH_FIELD;
 import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.MESSAGE_FIELD;
@@ -197,7 +198,7 @@ public class RocketMQRecordCursor implements RecordCursor {
         if (message.getBody() != null) {
             messageData = message.getBody();
         }
-        long timeStamp = message.getBornTimestamp();
+        long timeStamp = message.getStoreTimestamp();
 
         Map<ColumnHandle, FieldValueProvider> currentRowValuesMap = new HashMap<>();
 
@@ -209,6 +210,9 @@ public class RocketMQRecordCursor implements RecordCursor {
                 switch (columnHandle.getName()) {
                     case QUEUE_ID_FIELD:
                         currentRowValuesMap.put(columnHandle, longValueProvider(message.getQueueId()));
+                        break;
+                    case BROKER_NAME:
+                        currentRowValuesMap.put(columnHandle, bytesValueProvider(message.getBrokerName().getBytes(StandardCharsets.UTF_8)));
                         break;
                     case QUEUE_OFFSET_FIELD:
                         currentRowValuesMap.put(columnHandle, longValueProvider(message.getQueueOffset()));
