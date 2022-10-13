@@ -55,44 +55,37 @@ public class RocketMQTopicDescription
     }
 
     @JsonProperty
-    public String getTableName()
-    {
+    public String getTableName() {
         return tableName;
     }
 
     @JsonProperty
-    public String getTopicName()
-    {
+    public String getTopicName() {
         return topicName;
     }
 
     @JsonProperty
-    public Optional<String> getSchemaName()
-    {
+    public Optional<String> getSchemaName() {
         return schemaName;
     }
 
     @JsonProperty
-    public Optional<RocketMQTopicFieldGroup> getKey()
-    {
+    public Optional<RocketMQTopicFieldGroup> getKey() {
         return key;
     }
 
     @JsonProperty
-    public Optional<RocketMQTopicFieldGroup> getMessage()
-    {
+    public Optional<RocketMQTopicFieldGroup> getMessage() {
         return message;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return Objects.hash(tableName, topicName, schemaName, key, message);
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
@@ -109,8 +102,7 @@ public class RocketMQTopicDescription
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return toStringHelper(this)
                 .add("tableName", tableName)
                 .add("topicName", topicName)

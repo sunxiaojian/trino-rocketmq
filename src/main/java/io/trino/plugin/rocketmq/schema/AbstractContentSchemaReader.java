@@ -21,14 +21,12 @@ import java.util.Optional;
 
 public abstract class AbstractContentSchemaReader implements ContentSchemaReader {
     @Override
-    public final Optional<String> readKeyContentSchema(RocketMQTableHandle tableHandle)
-    {
+    public final Optional<String> readKeyContentSchema(RocketMQTableHandle tableHandle) {
         return readSchema(tableHandle.getKeySchemaLocation(), tableHandle.getKeySubject());
     }
 
     @Override
-    public final Optional<String> readValueContentSchema(RocketMQTableHandle tableHandle)
-    {
+    public final Optional<String> readValueContentSchema(RocketMQTableHandle tableHandle) {
         return readSchema(tableHandle.getValueSchemaLocation(), tableHandle.getMessageSubject());
     }
 
