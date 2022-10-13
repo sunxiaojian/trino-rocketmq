@@ -57,7 +57,6 @@ public class RocketMQSplitManager implements ConnectorSplitManager {
     private final RocketMQConsumerFactory consumerFactory;
     private final ContentSchemaReader contentSchemaReader;
     private final int messagesPerSplit;
-
     private final RocketMQFilterManager filterManager;
 
     @Inject
