@@ -28,8 +28,7 @@ import java.util.Set;
 /**
  * File table description supplier config
  */
-public class FileTableDescriptionSupplierConfig
-{
+public class FileTableDescriptionSupplierConfig {
     private Set<String> tableNames = ImmutableSet.of();
     private File tableDescriptionDir = new File("etc/rocketmq/");
 
