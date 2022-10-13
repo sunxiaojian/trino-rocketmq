@@ -85,9 +85,122 @@ Splits: 8 total, 8 done (100.00%)
 ```
 
 ## 基于 file schema 测试
+### 创建topic并添加数据
+
+### 添加配置文件 vim customer.json
 ```
- 待支持
+{
+    "tableName": "customer",
+    "topicName": "customer",
+    "key": {
+        "dataFormat": "raw",
+        "fields": [
+            {
+                "name": "key",
+                "dataFormat": "LONG",
+                "type": "BIGINT",
+                "hidden": "false"
+            }
+        ]
+    },
+    "message": {
+        "dataFormat": "json",
+        "fields": [
+            {
+                "name": "rowNumber",
+                "mapping": "rowNumber",
+                "type": "BIGINT"
+            },
+            {
+                "name": "customerKey",
+                "mapping": "customerKey",
+                "type": "BIGINT"
+            },
+            {
+                "name": "name",
+                "mapping": "name",
+                "type": "VARCHAR"
+            },
+            {
+                "name": "address",
+                "mapping": "address",
+                "type": "VARCHAR"
+            },
+            {
+                "name": "nationKey",
+                "mapping": "nationKey",
+                "type": "BIGINT"
+            },
+            {
+                "name": "phone",
+                "mapping": "phone",
+                "type": "VARCHAR"
+            },
+            {
+                "name": "accountBalance",
+                "mapping": "accountBalance",
+                "type": "DOUBLE"
+            },
+            {
+                "name": "marketSegment",
+                "mapping": "marketSegment",
+                "type": "VARCHAR"
+            },
+            {
+                "name": "comment",
+                "mapping": "comment",
+                "type": "VARCHAR"
+            }
+        ]
+    }
+}
 ```
+### 测试
+```
+trino@214be12d239f:/$ trino --catalog rocketmq --schema default
+trino:default> show tables;
+  Table
+----------
+ customer
+(1 row)
+
+Query 20221013_125244_00002_uted7, FINISHED, 1 node
+Splits: 7 total, 7 done (100.00%)
+0.26 [1 rows, 25B] [3 rows/s, 98B/s]
+
+trino:default> DESCRIBE customer;
+     Column      |              Type              | Extra |                    Comment
+-----------------+--------------------------------+-------+------------------------------------------------
+ key             | bigint                         |       |
+ rownumber       | bigint                         |       |
+ customerkey     | bigint                         |       |
+ name            | varchar                        |       |
+ address         | varchar                        |       |
+ nationkey       | bigint                         |       |
+ phone           | varchar                        |       |
+ accountbalance  | double                         |       |
+ marketsegment   | varchar                        |       |
+ comment         | varchar                        |       |
+ _queue_id       | bigint                         |       | Queue Id
+ _queue_offset   | bigint                         |       | Offset for the message within the MessageQueue
+ _message        | varchar                        |       | Message text
+ _message_length | bigint                         |       | Total number of message bytes
+ _key            | varchar                        |       | Key text
+ _key_length     | bigint                         |       | Total number of key bytes
+ _timestamp      | timestamp(3)                   |       | Message timestamp
+ _properties     | map(varchar, array(varbinary)) |       | message properties
+(18 rows)
+
+Query 20221013_125300_00003_uted7, FINISHED, 1 node
+Splits: 7 total, 7 done (100.00%)
+0.43 [18 rows, 1.33KB] [42 rows/s, 3.12KB/s]
+
+trino:default> select * from customer limit 3;
+Query 20221013_125652_00004_uted7 failed: org.apache.rocketmq.remoting.exception.RemotingConnectException: connect to [30.240.80.192:9876] failed
+
+
+```
+
 ## 基于 rocketmq schema registry 测试
 
 ```
