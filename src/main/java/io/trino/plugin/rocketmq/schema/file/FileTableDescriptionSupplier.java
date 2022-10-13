@@ -48,9 +48,7 @@ import static java.util.Objects.requireNonNull;
 
 public class FileTableDescriptionSupplier implements Provider<TableDescriptionSupplier> {
     public static final String NAME = "file";
-
     private static final Logger log = Logger.get(FileTableDescriptionSupplier.class);
-
     private final JsonCodec<RocketMQTopicDescription> topicDescriptionCodec;
     private final File tableDescriptionDir;
     private final String defaultSchema;
