@@ -155,6 +155,14 @@ Splits: 8 total, 8 done (100.00%)
     }
 }
 ```
+### 启动并挂载配置
+```
+docker run --name trino -d -p 8080:8080 -p 5005:5005  
+      --volume $PWD/trino/etc:/etc/trino  
+      --volume $PWD/trino/plugin:/usr/lib/trino/plugin 
+      --volume $PWD/trino/etc/rocketmq:/etc/rocketmq   
+      trinodb/trino
+```
 ### 测试
 ```
 trino@214be12d239f:/$ trino --catalog rocketmq --schema default
