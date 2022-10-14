@@ -48,7 +48,7 @@ public class RocketMQInternalFieldManager {
     public static final String KEY_FIELD = "_key";
     public static final String KEY_LENGTH_FIELD = "_key_length";
     public static final String OFFSET_TIMESTAMP_FIELD = "_timestamp";
-    public static final String MESSAGE_PROPERTIES = "_properties";
+
     private final Map<String, InternalField> internalFields;
 
     @Inject
@@ -89,11 +89,6 @@ public class RocketMQInternalFieldManager {
                         OFFSET_TIMESTAMP_FIELD,
                         "Message timestamp",
                         TIMESTAMP_MILLIS))
-                .put(MESSAGE_PROPERTIES, new InternalField(
-                        MESSAGE_PROPERTIES,
-                        "message properties",
-                        varcharMapType
-                ))
                 .buildOrThrow();
     }
 

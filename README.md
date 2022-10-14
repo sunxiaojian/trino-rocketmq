@@ -85,24 +85,24 @@ Splits: 8 total, 8 done (100.00%)
 ```
 
 ## 基于 file schema 测试
-### 创建topic并添加数据
+### 创建topic
+```
+sh mqadmin updateTopic  -t customers -n 127.0.0.1:9876 -b 127.0.0.1:10911
+```
+### 添加测试数据
+```
+sh mqadmin sendMessage  -b 127.0.0.1:10911 -t  customers -p '{"rowNumber":1,"customerKey":1,"name":"Customer#000000001","address":"IVhzIApeRb ot,c,E","nationKey":15,"phone":"25-989-741-2988","accountBalance":711.56,"marketSegment":"BUILDING","comment":"to the even, regular platelets. regular, ironic epitaphs nag e"}'
+sh mqadmin sendMessage  -b 127.0.0.1:10911 -t  customers -p '{"rowNumber":3,"customerKey":3,"name":"Customer#000000003","address":"MG9kdTD2WBHm","nationKey":1,"phone":"11-719-748-3364","accountBalance":7498.12,"marketSegment":"AUTOMOBILE","comment":" deposits eat slyly ironic, even instructions. express foxes detect slyly."}'
+sh mqadmin sendMessage  -b 127.0.0.1:10911 -t  customers -p '{"rowNumber":5,"customerKey":5,"name":"Customer#000000005","address":"KvpyuHCplrB84WgAiGV6sYpZq7Tj","nationKey":3,"phone":"13-750-942-6364","accountBalance":794.47,"marketSegment":"HOUSEHOLD","comment":"n accounts will have to unwind. foxes cajole accor"}'
+sh mqadmin sendMessage  -b 127.0.0.1:10911 -t  customers -p '{"rowNumber":7,"customerKey":7,"name":"Customer#000000007","address":"TcGe5gaZNgVePxU5kRrvXBfkasDTea","nationKey":18,"phone":"28-190-982-9759","accountBalance":9561.95,"marketSegment":"AUTOMOBILE","comment":"ainst the ironic, express theodolites. express, even pinto bean"}'
+sh mqadmin sendMessage  -b 127.0.0.1:10911 -t  customers -p '{"rowNumber":9,"customerKey":9,"name":"Customer#000000009","address":"xKiAFTjUsCuxfeleNqefumTrjS","nationKey":8,"phone":"18-338-906-3675","accountBalance":8324.07,"marketSegment":"FURNITURE","comment":"r theodolites according to the requests wake thinly excuses: pending"}'
 
+```
 ### 添加配置文件 vim customer.json
 ```
 {
-    "tableName": "customer",
-    "topicName": "customer",
-    "key": {
-        "dataFormat": "raw",
-        "fields": [
-            {
-                "name": "key",
-                "dataFormat": "LONG",
-                "type": "BIGINT",
-                "hidden": "false"
-            }
-        ]
-    },
+    "tableName": "customers",
+    "topicName": "customers",
     "message": {
         "dataFormat": "json",
         "fields": [
@@ -165,48 +165,56 @@ docker run --name trino -d -p 8080:8080 -p 5005:5005
 ```
 ### 测试
 ```
-trino@214be12d239f:/$ trino --catalog rocketmq --schema default
+trino@f7e89ebd3594:/$ trino --catalog rocketmq --schema default
 trino:default> show tables;
-  Table
-----------
- customer
+   Table
+-----------
+ customers
 (1 row)
 
-Query 20221013_125244_00002_uted7, FINISHED, 1 node
+Query 20221014_115646_00005_ez64t, FINISHED, 1 node
 Splits: 7 total, 7 done (100.00%)
-0.26 [1 rows, 25B] [3 rows/s, 98B/s]
+0.24 [1 rows, 26B] [4 rows/s, 110B/s]
 
-trino:default> DESCRIBE customer;
-     Column      |              Type              | Extra |                    Comment
------------------+--------------------------------+-------+------------------------------------------------
- key             | bigint                         |       |
- rownumber       | bigint                         |       |
- customerkey     | bigint                         |       |
- name            | varchar                        |       |
- address         | varchar                        |       |
- nationkey       | bigint                         |       |
- phone           | varchar                        |       |
- accountbalance  | double                         |       |
- marketsegment   | varchar                        |       |
- comment         | varchar                        |       |
- _queue_id       | bigint                         |       | Queue Id
- _queue_offset   | bigint                         |       | Offset for the message within the MessageQueue
- _message        | varchar                        |       | Message text
- _message_length | bigint                         |       | Total number of message bytes
- _key            | varchar                        |       | Key text
- _key_length     | bigint                         |       | Total number of key bytes
- _timestamp      | timestamp(3)                   |       | Message timestamp
- _properties     | map(varchar, array(varbinary)) |       | message properties
-(18 rows)
+trino:default> describe table customers;
+Query 20221014_115702_00007_ez64t failed: line 1:10: mismatched input 'table'. Expecting: 'INPUT', 'OUTPUT', <identifier>
+describe table customers
 
-Query 20221013_125300_00003_uted7, FINISHED, 1 node
+trino:default> describe customers;
+     Column      |     Type     | Extra |                    Comment
+-----------------+--------------+-------+------------------------------------------------
+ rownumber       | bigint       |       |
+ customerkey     | bigint       |       |
+ name            | varchar      |       |
+ address         | varchar      |       |
+ nationkey       | bigint       |       |
+ phone           | varchar      |       |
+ accountbalance  | double       |       |
+ marketsegment   | varchar      |       |
+ comment         | varchar      |       |
+ _queue_id       | bigint       |       | Queue Id
+ _broker_name    | varchar      |       | Broker name
+ _queue_offset   | bigint       |       | Offset for the message within the MessageQueue
+ _message        | varchar      |       | Message text
+ _message_length | bigint       |       | Total number of message bytes
+ _key            | varchar      |       | Key text
+ _key_length     | bigint       |       | Total number of key bytes
+ _timestamp      | timestamp(3) |       | Message timestamp
+(17 rows)
+
+Query 20221014_115707_00008_ez64t, FINISHED, 1 node
 Splits: 7 total, 7 done (100.00%)
-0.43 [18 rows, 1.33KB] [42 rows/s, 3.12KB/s]
+0.37 [17 rows, 1.26KB] [45 rows/s, 3.36KB/s]
 
-trino:default> select * from customer limit 3;
-Query 20221013_125652_00004_uted7 failed: org.apache.rocketmq.remoting.exception.RemotingConnectException: connect to [30.240.80.192:9876] failed
-
-
+trino:default> select * from customers;
+ rownumber | customerkey |        name        |            address             | nationkey |      phone      | accountbalance | marketsegment |                                      comment                                   >
+-----------+-------------+--------------------+--------------------------------+-----------+-----------------+----------------+---------------+-------------------------------------------------------------------------------->
+         1 |           1 | Customer#000000001 | IVhzIApeRb ot,c,E              |        15 | 25-989-741-2988 |         711.56 | BUILDING      | to the even, regular platelets. regular, ironic epitaphs nag e                 >
+         5 |           5 | Customer#000000005 | KvpyuHCplrB84WgAiGV6sYpZq7Tj   |         3 | 13-750-942-6364 |         794.47 | HOUSEHOLD     | n accounts will have to unwind. foxes cajole accor                             >
+         7 |           7 | Customer#000000007 | TcGe5gaZNgVePxU5kRrvXBfkasDTea |        18 | 28-190-982-9759 |        9561.95 | AUTOMOBILE    | ainst the ironic, express theodolites. express, even pinto bean                >
+         9 |           9 | Customer#000000009 | xKiAFTjUsCuxfeleNqefumTrjS     |         8 | 18-338-906-3675 |        8324.07 | FURNITURE     | r theodolites according to the requests wake thinly excuses: pending           >
+         3 |           3 | Customer#000000003 | MG9kdTD2WBHm                   |         1 | 11-719-748-3364 |        7498.12 | AUTOMOBILE    |  deposits eat slyly ironic, even instructions. express foxes detect slyly. blit>
+(5 rows)
 ```
 
 ## 基于 rocketmq schema registry 测试

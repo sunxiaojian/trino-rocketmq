@@ -54,7 +54,7 @@ import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.KEY_FIELD;
 import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.KEY_LENGTH_FIELD;
 import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.MESSAGE_FIELD;
 import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.MESSAGE_LENGTH_FIELD;
-import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.MESSAGE_PROPERTIES;
+//import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.MESSAGE_PROPERTIES;
 import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.MSG_ID;
 import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.OFFSET_TIMESTAMP_FIELD;
 import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.QUEUE_ID_FIELD;
@@ -232,9 +232,6 @@ public class RocketMQRecordCursor implements RecordCursor {
                     case OFFSET_TIMESTAMP_FIELD:
                         timeStamp *= MICROSECONDS_PER_MILLISECOND;
                         currentRowValuesMap.put(columnHandle, longValueProvider(timeStamp));
-                        break;
-                    case MESSAGE_PROPERTIES:
-                        currentRowValuesMap.put(columnHandle, propertiesValueProvider((MapType) columnHandle.getType(), message.getProperties()));
                         break;
                     case MSG_ID:
                         currentRowValuesMap.put(columnHandle, bytesValueProvider(message.getMsgId().getBytes()));
