@@ -4,6 +4,11 @@
 Trino:  [文档中心](https://trino.io/)
 
 RocketMQ:  [文档中心](https://rocketmq.apache.org/)
+# 使用场景参考
+```
+[英] https://www.uber.com/blog/presto-on-apache-kafka-at-uber-scale/
+[中] https://cloud.tencent.com/developer/article/1983280
+```
 # 架构介绍
 >扩展 trino rocketmq connector，用于支持 rocketmq 下面的即席查询
 
