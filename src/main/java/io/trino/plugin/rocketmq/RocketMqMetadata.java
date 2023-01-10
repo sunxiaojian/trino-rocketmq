@@ -88,16 +88,16 @@ public class RocketMqMetadata implements ConnectorMetadata {
     @Override
     public RocketMqTableHandle getTableHandle(ConnectorSession session, SchemaTableName schemaTableName) {
         return getTopicDescription(session, schemaTableName)
-                .map(rocketMQTopicDescription -> new RocketMqTableHandle(
+                .map(rocketMqTopicDescription -> new RocketMqTableHandle(
                         schemaTableName.getSchemaName(),
                         schemaTableName.getTableName(),
-                        rocketMQTopicDescription.getTopicName(),
-                        getDataFormat(rocketMQTopicDescription.getKey()),
-                        getDataFormat(rocketMQTopicDescription.getMessage()),
-                        rocketMQTopicDescription.getKey().flatMap(RocketMqTopicFieldGroup::getDataSchema),
-                        rocketMQTopicDescription.getMessage().flatMap(RocketMqTopicFieldGroup::getDataSchema),
-                        rocketMQTopicDescription.getKey().flatMap(RocketMqTopicFieldGroup::getSubject),
-                        rocketMQTopicDescription.getMessage().flatMap(RocketMqTopicFieldGroup::getSubject),
+                        rocketMqTopicDescription.getTopicName(),
+                        getDataFormat(rocketMqTopicDescription.getKey()),
+                        getDataFormat(rocketMqTopicDescription.getMessage()),
+                        rocketMqTopicDescription.getKey().flatMap(RocketMqTopicFieldGroup::getDataSchema),
+                        rocketMqTopicDescription.getMessage().flatMap(RocketMqTopicFieldGroup::getDataSchema),
+                        rocketMqTopicDescription.getKey().flatMap(RocketMqTopicFieldGroup::getSubject),
+                        rocketMqTopicDescription.getMessage().flatMap(RocketMqTopicFieldGroup::getSubject),
                         getColumnHandles(session, schemaTableName).values().stream()
                                 .map(RocketMqColumnHandle.class::cast)
                                 .collect(toImmutableList()),
