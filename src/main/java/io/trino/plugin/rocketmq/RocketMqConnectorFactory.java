@@ -40,11 +40,9 @@ import static java.util.Objects.requireNonNull;
  */
 public class RocketMqConnectorFactory implements ConnectorFactory {
 
-
     private final Module extension;
-
     public RocketMqConnectorFactory(Module extension) {
-        this.extension = requireNonNull(extension, "extension is null");
+        this.extension = requireNonNull(extension, "Module extension is null");
     }
 
 

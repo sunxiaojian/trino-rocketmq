@@ -54,8 +54,6 @@ public class RocketMqInternalFieldManager {
     @Inject
     public RocketMqInternalFieldManager(TypeManager typeManager)
     {
-        Type varcharMapType = typeManager.getType(mapType(VARCHAR.getTypeSignature(), arrayType(VARBINARY.getTypeSignature())));
-
         internalFields = ImmutableMap.<String, InternalField>builder()
                 .put(QUEUE_ID_FIELD, new InternalField(
                         QUEUE_ID_FIELD,
@@ -69,21 +67,21 @@ public class RocketMqInternalFieldManager {
                         QUEUE_OFFSET_FIELD,
                         "Offset for the message within the MessageQueue",
                         BigintType.BIGINT))
-                .put(MESSAGE_FIELD, new InternalField(
-                        MESSAGE_FIELD,
-                        "Message text",
-                        createUnboundedVarcharType()))
-                .put(MESSAGE_LENGTH_FIELD, new InternalField(
-                        MESSAGE_LENGTH_FIELD,
-                        "Total number of message bytes",
-                        BigintType.BIGINT))
                 .put(KEY_FIELD, new InternalField(
                         KEY_FIELD,
                         "Key text",
                         createUnboundedVarcharType()))
+                .put(MESSAGE_FIELD, new InternalField(
+                        MESSAGE_FIELD,
+                        "Message text",
+                        createUnboundedVarcharType()))
                 .put(KEY_LENGTH_FIELD, new InternalField(
                         KEY_LENGTH_FIELD,
                         "Total number of key bytes",
+                        BigintType.BIGINT))
+                .put(MESSAGE_LENGTH_FIELD, new InternalField(
+                        MESSAGE_LENGTH_FIELD,
+                        "Total number of message bytes",
                         BigintType.BIGINT))
                 .put(OFFSET_TIMESTAMP_FIELD, new InternalField(
                         OFFSET_TIMESTAMP_FIELD,
@@ -96,7 +94,6 @@ public class RocketMqInternalFieldManager {
         private final String columnName;
         private final String comment;
         private final Type type;
-
         InternalField(String columnName, String comment, Type type)
         {
             this.columnName = requireNonNull(columnName, "columnName is null");
