@@ -14,27 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.trino.plugin.rocketmq.handle;
 
-package io.trino.plugin.rocketmq;
+import io.trino.spi.connector.ConnectorTransactionHandle;
 
-import io.trino.spi.HostAddress;
-import io.trino.spi.connector.ConnectorSession;
-import org.apache.rocketmq.client.consumer.DefaultLitePullConsumer;
-import org.apache.rocketmq.tools.admin.DefaultMQAdminExt;
-
-/**
- * rocketmq consumer factory
- */
-public interface RocketMqConsumerFactory {
-
-    default DefaultLitePullConsumer create(ConnectorSession session)
-    {
-        return consumer(session);
-    }
-
-    DefaultLitePullConsumer consumer(ConnectorSession session);
-
-    DefaultMQAdminExt admin(ConnectorSession session);
-
-    HostAddress hostAddress();
+public enum RocketMqTransactionHandle implements ConnectorTransactionHandle {
+    INSTANCE
 }

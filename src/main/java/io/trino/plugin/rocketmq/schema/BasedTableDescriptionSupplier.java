@@ -30,10 +30,10 @@ import static java.util.Objects.requireNonNull;
 /**
  * Map based table description supplier
  */
-public class MapBasedTableDescriptionSupplier implements TableDescriptionSupplier {
+public class BasedTableDescriptionSupplier implements TableDescriptionSupplier {
     private final Map<SchemaTableName, RocketMqTopicDescription> map;
 
-    public MapBasedTableDescriptionSupplier(Map<SchemaTableName, RocketMqTopicDescription> map) {
+    public BasedTableDescriptionSupplier(Map<SchemaTableName, RocketMqTopicDescription> map) {
         this.map = ImmutableMap.copyOf(requireNonNull(map, "map is null"));
     }
 

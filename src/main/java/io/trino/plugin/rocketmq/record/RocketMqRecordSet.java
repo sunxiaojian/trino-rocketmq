@@ -18,8 +18,8 @@
 package io.trino.plugin.rocketmq.record;
 
 import io.trino.decoder.RowDecoder;
-import io.trino.plugin.rocketmq.RocketMqColumnHandle;
-import io.trino.plugin.rocketmq.RocketMqConsumerFactory;
+import io.trino.plugin.rocketmq.handle.RocketMqColumnHandle;
+import io.trino.plugin.rocketmq.client.RocketMqConsumerFactory;
 import io.trino.plugin.rocketmq.split.RocketMqSplit;
 import io.trino.spi.connector.ConnectorSession;
 import io.trino.spi.connector.RecordCursor;

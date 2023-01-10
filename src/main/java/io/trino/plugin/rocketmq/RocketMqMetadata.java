@@ -21,6 +21,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.airlift.slice.Slice;
 import io.trino.decoder.dummy.DummyRowDecoder;
+import io.trino.plugin.rocketmq.handle.RocketMqColumnHandle;
+import io.trino.plugin.rocketmq.handle.RocketMqTableHandle;
 import io.trino.plugin.rocketmq.schema.RocketMqTopicDescription;
 import io.trino.plugin.rocketmq.schema.RocketMqTopicFieldDescription;
 import io.trino.plugin.rocketmq.schema.RocketMqTopicFieldGroup;
@@ -67,10 +69,10 @@ public class RocketMqMetadata implements ConnectorMetadata {
 
     @Inject
     public RocketMqMetadata(RocketMqConfig config,
-                            RocketMqInternalFieldManager rocketMQInternalFieldManager,
+                            RocketMqInternalFieldManager rocketMqInternalFieldManager,
                             TableDescriptionSupplier tableDescriptionSupplier) {
         this.hideInternalColumns = config.isHideInternalColumns();
-        this.rocketMQInternalFieldManager = rocketMQInternalFieldManager;
+        this.rocketMQInternalFieldManager = rocketMqInternalFieldManager;
         this.tableDescriptionSupplier = tableDescriptionSupplier;
     }
 

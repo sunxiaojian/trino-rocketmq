@@ -14,10 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.trino.plugin.rocketmq;
+package io.trino.plugin.rocketmq.client;
 
-import io.trino.spi.connector.ConnectorTransactionHandle;
+import io.trino.plugin.rocketmq.RocketMqConfig;
+import io.trino.spi.connector.ConnectorSession;
+import org.apache.rocketmq.client.producer.DefaultMQProducer;
 
-public enum RocketMqTransactionHandle implements ConnectorTransactionHandle {
-    INSTANCE
+import javax.inject.Inject;
+
+/**
+ * Default rocketMq producer factory
+ */
+public class DefaultRocketMqProducerFactory implements RocketMqProducerFactory {
+
+    private final RocketMqConfig config;
+
+    @Inject
+    public DefaultRocketMqProducerFactory(RocketMqConfig config) {
+        this.config = config;
+    }
+
+    @Override
+    public DefaultMQProducer producer(ConnectorSession session) {
+        return null;
+    }
+
 }

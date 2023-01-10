@@ -30,8 +30,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Json description to parse a row on a rocketmq topic. A row contains a message and an optional key. See the documentation for the exact JSON syntax.
  */
-public class RocketMqTopicDescription
-{
+public class RocketMqTopicDescription {
     private final String tableName;
     private final String topicName;
     private final Optional<String> schemaName;

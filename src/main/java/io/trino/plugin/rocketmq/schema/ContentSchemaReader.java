@@ -16,7 +16,7 @@
  */
 package io.trino.plugin.rocketmq.schema;
 
-import io.trino.plugin.rocketmq.RocketMqTableHandle;
+import io.trino.plugin.rocketmq.handle.RocketMqTableHandle;
 
 import java.util.Optional;
 

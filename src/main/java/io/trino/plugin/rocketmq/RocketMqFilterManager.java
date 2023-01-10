@@ -18,6 +18,9 @@
 package io.trino.plugin.rocketmq;
 
 import com.google.common.collect.ImmutableMap;
+import io.trino.plugin.rocketmq.client.RocketMqConsumerFactory;
+import io.trino.plugin.rocketmq.handle.RocketMqColumnHandle;
+import io.trino.plugin.rocketmq.handle.RocketMqTableHandle;
 import io.trino.plugin.rocketmq.split.Range;
 import io.trino.spi.connector.ColumnHandle;
 import io.trino.spi.connector.ConnectorSession;
@@ -63,7 +66,7 @@ public class RocketMqFilterManager {
 
     @Inject
     public RocketMqFilterManager(RocketMqConsumerFactory consumerFactory){
-        this.consumerFactory = requireNonNull(consumerFactory, "RocketMQ consumer factory is null");
+        this.consumerFactory = requireNonNull(consumerFactory, "RocketMq consumer factory is null");
     }
 
     /**

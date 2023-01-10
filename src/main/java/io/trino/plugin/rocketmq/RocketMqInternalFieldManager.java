@@ -18,6 +18,7 @@ package io.trino.plugin.rocketmq;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
+import io.trino.plugin.rocketmq.handle.RocketMqColumnHandle;
 import io.trino.spi.connector.ColumnMetadata;
 import io.trino.spi.type.BigintType;
 import io.trino.spi.type.Type;
@@ -27,10 +28,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static io.trino.spi.type.TimestampType.TIMESTAMP_MILLIS;
-import static io.trino.spi.type.TypeSignature.arrayType;
-import static io.trino.spi.type.TypeSignature.mapType;
-import static io.trino.spi.type.VarbinaryType.VARBINARY;
-import static io.trino.spi.type.VarcharType.VARCHAR;
 import static io.trino.spi.type.VarcharType.createUnboundedVarcharType;
 import static java.util.Objects.requireNonNull;
 

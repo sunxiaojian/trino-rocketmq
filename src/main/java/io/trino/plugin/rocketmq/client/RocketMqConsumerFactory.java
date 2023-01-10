@@ -14,18 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.trino.plugin.rocketmq;
 
+package io.trino.plugin.rocketmq.client;
+
+import io.trino.spi.HostAddress;
 import io.trino.spi.connector.ConnectorSession;
-import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.consumer.DefaultLitePullConsumer;
+import org.apache.rocketmq.tools.admin.DefaultMQAdminExt;
 
 /**
- * rocketmq producer factory
+ * rocketmq consumer factory
  */
-public interface RocketMqProducerFactory {
+public interface RocketMqConsumerFactory {
 
-    default DefaultMQProducer create(ConnectorSession session) {
-        return producer(session);
+    default DefaultLitePullConsumer create(ConnectorSession session)
+    {
+        return consumer(session);
     }
-    DefaultMQProducer producer(ConnectorSession session);
+
+    DefaultLitePullConsumer consumer(ConnectorSession session);
+
+    DefaultMQAdminExt admin(ConnectorSession session);
+
+    HostAddress hostAddress();
 }

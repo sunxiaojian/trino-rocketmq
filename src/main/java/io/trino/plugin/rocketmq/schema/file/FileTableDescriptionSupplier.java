@@ -24,7 +24,7 @@ import io.airlift.json.JsonCodec;
 import io.airlift.log.Logger;
 import io.trino.decoder.dummy.DummyRowDecoder;
 import io.trino.plugin.rocketmq.RocketMqConfig;
-import io.trino.plugin.rocketmq.schema.MapBasedTableDescriptionSupplier;
+import io.trino.plugin.rocketmq.schema.BasedTableDescriptionSupplier;
 import io.trino.plugin.rocketmq.schema.RocketMqTopicDescription;
 import io.trino.plugin.rocketmq.schema.RocketMqTopicFieldGroup;
 import io.trino.plugin.rocketmq.schema.TableDescriptionSupplier;
@@ -65,7 +65,7 @@ public class FileTableDescriptionSupplier implements Provider<TableDescriptionSu
     @Override
     public TableDescriptionSupplier get() {
         Map<SchemaTableName, RocketMqTopicDescription> tables = populateTables();
-        return new MapBasedTableDescriptionSupplier(tables);
+        return new BasedTableDescriptionSupplier(tables);
     }
 
     /**

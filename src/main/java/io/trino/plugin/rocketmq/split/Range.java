@@ -26,8 +26,7 @@ import java.util.List;
 import static com.google.common.base.MoreObjects.toStringHelper;
 import static java.lang.Math.min;
 
-public class Range
-{
+public class Range {
     private static final int INSTANCE_SIZE = ClassLayout.parseClass(Range.class).instanceSize();
 
     private final long begin; // inclusive

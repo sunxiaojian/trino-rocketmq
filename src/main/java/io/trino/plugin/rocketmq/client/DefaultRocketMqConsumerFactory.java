@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-package io.trino.plugin.rocketmq;
+package io.trino.plugin.rocketmq.client;
 
+import io.trino.plugin.rocketmq.RocketMqConfig;
 import io.trino.spi.HostAddress;
 import io.trino.spi.connector.ConnectorSession;
 import org.apache.commons.lang3.StringUtils;
@@ -31,15 +32,15 @@ import org.apache.rocketmq.tools.admin.DefaultMQAdminExt;
 import javax.inject.Inject;
 
 /**
- * rocketmq consumer factory
+ * Default rocketMq consumer factory
  */
 public class DefaultRocketMqConsumerFactory implements RocketMqConsumerFactory {
 
     private final RocketMqConfig config;
 
     @Inject
-    public DefaultRocketMqConsumerFactory(RocketMqConfig rocketMQConfig) {
-        this.config = rocketMQConfig;
+    public DefaultRocketMqConsumerFactory(RocketMqConfig rocketMqConfig) {
+        this.config = rocketMqConfig;
     }
 
     private static RPCHook getAclRPCHook(String accessKey, String secretKey) {

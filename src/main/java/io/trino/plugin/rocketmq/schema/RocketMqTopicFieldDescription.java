@@ -18,7 +18,7 @@ package io.trino.plugin.rocketmq.schema;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.trino.plugin.rocketmq.RocketMqColumnHandle;
+import io.trino.plugin.rocketmq.handle.RocketMqColumnHandle;
 import io.trino.spi.connector.ColumnMetadata;
 import io.trino.spi.type.Type;
 

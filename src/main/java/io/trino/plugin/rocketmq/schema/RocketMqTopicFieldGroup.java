@@ -30,8 +30,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Groups the field descriptions for message or key.
  */
-public class RocketMqTopicFieldGroup
-{
+public class RocketMqTopicFieldGroup {
     private final String dataFormat;
     private final Optional<String> dataSchema;
     private final Optional<String> subject;

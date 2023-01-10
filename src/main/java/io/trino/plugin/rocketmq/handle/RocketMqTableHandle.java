@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package io.trino.plugin.rocketmq;
+package io.trino.plugin.rocketmq.handle;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

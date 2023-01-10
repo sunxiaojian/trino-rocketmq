@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package io.trino.plugin.rocketmq;
+package io.trino.plugin.rocketmq.handle;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -150,7 +150,7 @@ public final class RocketMqColumnHandle
         return internal;
     }
 
-    ColumnMetadata getColumnMetadata()
+    public ColumnMetadata getColumnMetadata()
     {
         return ColumnMetadata.builder()
                 .setName(name)

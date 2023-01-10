@@ -18,6 +18,7 @@
 package io.trino.plugin.rocketmq;
 
 import io.airlift.bootstrap.LifeCycleManager;
+import io.trino.plugin.rocketmq.handle.RocketMqTransactionHandle;
 import io.trino.spi.connector.Connector;
 import io.trino.spi.connector.ConnectorMetadata;
 import io.trino.spi.connector.ConnectorPageSinkProvider;
