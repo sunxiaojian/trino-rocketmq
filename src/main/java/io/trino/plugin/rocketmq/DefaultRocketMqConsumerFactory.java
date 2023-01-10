@@ -33,12 +33,12 @@ import javax.inject.Inject;
 /**
  * rocketmq consumer factory
  */
-public class DefaultRocketMQConsumerFactory implements RocketMQConsumerFactory {
+public class DefaultRocketMqConsumerFactory implements RocketMqConsumerFactory {
 
-    private final RocketMQConfig config;
+    private final RocketMqConfig config;
 
     @Inject
-    public DefaultRocketMQConsumerFactory(RocketMQConfig rocketMQConfig) {
+    public DefaultRocketMqConsumerFactory(RocketMqConfig rocketMQConfig) {
         this.config = rocketMQConfig;
     }
 

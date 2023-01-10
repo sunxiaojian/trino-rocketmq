@@ -35,9 +35,9 @@ import static java.util.Objects.requireNonNull;
 /**
  * RocketMQ split
  */
-public class RocketMQSplit implements ConnectorSplit {
+public class RocketMqSplit implements ConnectorSplit {
 
-    private static final long INSTANCE_SIZE = ClassLayout.parseClass(RocketMQSplit.class).instanceSize();
+    private static final long INSTANCE_SIZE = ClassLayout.parseClass(RocketMqSplit.class).instanceSize();
     private final String topicName;
     private final String keyDataFormat;
     private final String messageDataFormat;
@@ -49,7 +49,7 @@ public class RocketMQSplit implements ConnectorSplit {
     private final HostAddress nameSrvAddress;
 
     @JsonCreator
-    public RocketMQSplit(@JsonProperty("topicName") String topicName,
+    public RocketMqSplit(@JsonProperty("topicName") String topicName,
                          @JsonProperty("keyDataFormat") String keyDataFormat,
                          @JsonProperty("messageDataFormat") String messageDataFormat,
                          @JsonProperty("keyDataSchemaContents") Optional<String> keyDataSchemaContents,

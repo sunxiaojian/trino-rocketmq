@@ -17,24 +17,30 @@
 
 package io.trino.plugin.rocketmq;
 
-import io.trino.spi.HostAddress;
-import io.trino.spi.connector.ConnectorSession;
-import org.apache.rocketmq.client.consumer.DefaultLitePullConsumer;
-import org.apache.rocketmq.tools.admin.DefaultMQAdminExt;
+import org.apache.rocketmq.common.admin.TopicOffset;
+import org.apache.rocketmq.common.message.MessageQueue;
+
+import java.util.List;
+import java.util.Map;
 
 /**
- * rocketmq consumer factory
+ * rocketmq filter result
  */
-public interface RocketMQConsumerFactory {
+public class RocketMqFilteringResult {
 
-    default DefaultLitePullConsumer create(ConnectorSession session)
-    {
-        return consumer(session);
+    private final List<MessageQueue> messageQueues;
+    private final Map<MessageQueue, TopicOffset> messageQueueTopicOffsets;
+
+    public RocketMqFilteringResult(List<MessageQueue> messageQueues, Map<MessageQueue, TopicOffset> messageQueueTopicOffsets){
+        this.messageQueues = messageQueues;
+        this.messageQueueTopicOffsets = messageQueueTopicOffsets;
     }
 
-    DefaultLitePullConsumer consumer(ConnectorSession session);
+    public List<MessageQueue> getMessageQueues() {
+        return messageQueues;
+    }
 
-    DefaultMQAdminExt admin(ConnectorSession session);
-
-    HostAddress hostAddress();
+    public Map<MessageQueue, TopicOffset> getMessageQueueTopicOffsets() {
+        return messageQueueTopicOffsets;
+    }
 }

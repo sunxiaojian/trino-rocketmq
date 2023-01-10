@@ -21,9 +21,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.airlift.slice.Slice;
 import io.trino.decoder.dummy.DummyRowDecoder;
-import io.trino.plugin.rocketmq.schema.RocketMQTopicDescription;
-import io.trino.plugin.rocketmq.schema.RocketMQTopicFieldDescription;
-import io.trino.plugin.rocketmq.schema.RocketMQTopicFieldGroup;
+import io.trino.plugin.rocketmq.schema.RocketMqTopicDescription;
+import io.trino.plugin.rocketmq.schema.RocketMqTopicFieldDescription;
+import io.trino.plugin.rocketmq.schema.RocketMqTopicFieldGroup;
 import io.trino.plugin.rocketmq.schema.TableDescriptionSupplier;
 import io.trino.spi.TrinoException;
 import io.trino.spi.connector.ColumnHandle;
@@ -60,22 +60,22 @@ import static java.util.Objects.requireNonNull;
 /**
  * rocketmq metadata
  */
-public class RocketMQMetadata implements ConnectorMetadata {
+public class RocketMqMetadata implements ConnectorMetadata {
     private final boolean hideInternalColumns;
-    private final RocketMQInternalFieldManager rocketMQInternalFieldManager;
+    private final RocketMqInternalFieldManager rocketMQInternalFieldManager;
     private final TableDescriptionSupplier tableDescriptionSupplier;
 
     @Inject
-    public RocketMQMetadata(RocketMQConfig config,
-                            RocketMQInternalFieldManager rocketMQInternalFieldManager,
+    public RocketMqMetadata(RocketMqConfig config,
+                            RocketMqInternalFieldManager rocketMQInternalFieldManager,
                             TableDescriptionSupplier tableDescriptionSupplier) {
         this.hideInternalColumns = config.isHideInternalColumns();
         this.rocketMQInternalFieldManager = rocketMQInternalFieldManager;
         this.tableDescriptionSupplier = tableDescriptionSupplier;
     }
 
-    private static String getDataFormat(Optional<RocketMQTopicFieldGroup> fieldGroup) {
-        return fieldGroup.map(RocketMQTopicFieldGroup::getDataFormat).orElse(DummyRowDecoder.NAME);
+    private static String getDataFormat(Optional<RocketMqTopicFieldGroup> fieldGroup) {
+        return fieldGroup.map(RocketMqTopicFieldGroup::getDataFormat).orElse(DummyRowDecoder.NAME);
     }
 
     @Override
@@ -86,20 +86,20 @@ public class RocketMQMetadata implements ConnectorMetadata {
     }
 
     @Override
-    public RocketMQTableHandle getTableHandle(ConnectorSession session, SchemaTableName schemaTableName) {
+    public RocketMqTableHandle getTableHandle(ConnectorSession session, SchemaTableName schemaTableName) {
         return getTopicDescription(session, schemaTableName)
-                .map(rocketMQTopicDescription -> new RocketMQTableHandle(
+                .map(rocketMQTopicDescription -> new RocketMqTableHandle(
                         schemaTableName.getSchemaName(),
                         schemaTableName.getTableName(),
                         rocketMQTopicDescription.getTopicName(),
                         getDataFormat(rocketMQTopicDescription.getKey()),
                         getDataFormat(rocketMQTopicDescription.getMessage()),
-                        rocketMQTopicDescription.getKey().flatMap(RocketMQTopicFieldGroup::getDataSchema),
-                        rocketMQTopicDescription.getMessage().flatMap(RocketMQTopicFieldGroup::getDataSchema),
-                        rocketMQTopicDescription.getKey().flatMap(RocketMQTopicFieldGroup::getSubject),
-                        rocketMQTopicDescription.getMessage().flatMap(RocketMQTopicFieldGroup::getSubject),
+                        rocketMQTopicDescription.getKey().flatMap(RocketMqTopicFieldGroup::getDataSchema),
+                        rocketMQTopicDescription.getMessage().flatMap(RocketMqTopicFieldGroup::getDataSchema),
+                        rocketMQTopicDescription.getKey().flatMap(RocketMqTopicFieldGroup::getSubject),
+                        rocketMQTopicDescription.getMessage().flatMap(RocketMqTopicFieldGroup::getSubject),
                         getColumnHandles(session, schemaTableName).values().stream()
-                                .map(RocketMQColumnHandle.class::cast)
+                                .map(RocketMqColumnHandle.class::cast)
                                 .collect(toImmutableList()),
                         TupleDomain.all()))
                 .orElse(null);
@@ -107,7 +107,7 @@ public class RocketMQMetadata implements ConnectorMetadata {
 
     @Override
     public ConnectorTableMetadata getTableMetadata(ConnectorSession session, ConnectorTableHandle tableHandle) {
-        return getTableMetadata(session, ((RocketMQTableHandle) tableHandle).toSchemaTableName());
+        return getTableMetadata(session, ((RocketMqTableHandle) tableHandle).toSchemaTableName());
     }
 
     @Override
@@ -119,32 +119,32 @@ public class RocketMQMetadata implements ConnectorMetadata {
 
     @Override
     public Map<String, ColumnHandle> getColumnHandles(ConnectorSession session, ConnectorTableHandle tableHandle) {
-        return getColumnHandles(session, ((RocketMQTableHandle) tableHandle).toSchemaTableName());
+        return getColumnHandles(session, ((RocketMqTableHandle) tableHandle).toSchemaTableName());
     }
 
     private Map<String, ColumnHandle> getColumnHandles(ConnectorSession session, SchemaTableName schemaTableName) {
-        RocketMQTopicDescription rocketMQTopicDescription = getRequiredTopicDescription(session, schemaTableName);
+        RocketMqTopicDescription rocketMQTopicDescription = getRequiredTopicDescription(session, schemaTableName);
         ImmutableMap.Builder<String, ColumnHandle> columnHandles = ImmutableMap.builder();
         AtomicInteger index = new AtomicInteger(0);
         rocketMQTopicDescription.getKey().ifPresent(key -> {
-            List<RocketMQTopicFieldDescription> fields = key.getFields();
+            List<RocketMqTopicFieldDescription> fields = key.getFields();
             if (fields != null) {
-                for (RocketMQTopicFieldDescription topicFieldDescription : fields) {
+                for (RocketMqTopicFieldDescription topicFieldDescription : fields) {
                     columnHandles.put(topicFieldDescription.getName(), topicFieldDescription.getColumnHandle(true, index.getAndIncrement()));
                 }
             }
         });
 
         rocketMQTopicDescription.getMessage().ifPresent(message -> {
-            List<RocketMQTopicFieldDescription> fields = message.getFields();
+            List<RocketMqTopicFieldDescription> fields = message.getFields();
             if (fields != null) {
-                for (RocketMQTopicFieldDescription rocketMqTopicFieldDescription : fields) {
+                for (RocketMqTopicFieldDescription rocketMqTopicFieldDescription : fields) {
                     columnHandles.put(rocketMqTopicFieldDescription.getName(), rocketMqTopicFieldDescription.getColumnHandle(false, index.getAndIncrement()));
                 }
             }
         });
 
-        for (RocketMQInternalFieldManager.InternalField rocketmqInternalField : rocketMQInternalFieldManager.getInternalFields().values()) {
+        for (RocketMqInternalFieldManager.InternalField rocketmqInternalField : rocketMQInternalFieldManager.getInternalFields().values()) {
             columnHandles.put(rocketmqInternalField.getColumnName(), rocketmqInternalField.getColumnHandle(index.getAndIncrement(), hideInternalColumns));
         }
 
@@ -174,31 +174,31 @@ public class RocketMQMetadata implements ConnectorMetadata {
 
     @Override
     public ColumnMetadata getColumnMetadata(ConnectorSession session, ConnectorTableHandle tableHandle, ColumnHandle columnHandle) {
-        return ((RocketMQColumnHandle) columnHandle).getColumnMetadata();
+        return ((RocketMqColumnHandle) columnHandle).getColumnMetadata();
     }
 
     private ConnectorTableMetadata getTableMetadata(ConnectorSession session, SchemaTableName schemaTableName) {
-        RocketMQTopicDescription table = getRequiredTopicDescription(session, schemaTableName);
+        RocketMqTopicDescription table = getRequiredTopicDescription(session, schemaTableName);
         ImmutableList.Builder<ColumnMetadata> builder = ImmutableList.builder();
         table.getKey().ifPresent(key -> {
-            List<RocketMQTopicFieldDescription> fields = key.getFields();
+            List<RocketMqTopicFieldDescription> fields = key.getFields();
             if (fields != null) {
-                for (RocketMQTopicFieldDescription fieldDescription : fields) {
+                for (RocketMqTopicFieldDescription fieldDescription : fields) {
                     builder.add(fieldDescription.getColumnMetadata());
                 }
             }
         });
 
         table.getMessage().ifPresent(message -> {
-            List<RocketMQTopicFieldDescription> fields = message.getFields();
+            List<RocketMqTopicFieldDescription> fields = message.getFields();
             if (fields != null) {
-                for (RocketMQTopicFieldDescription fieldDescription : fields) {
+                for (RocketMqTopicFieldDescription fieldDescription : fields) {
                     builder.add(fieldDescription.getColumnMetadata());
                 }
             }
         });
 
-        for (RocketMQInternalFieldManager.InternalField fieldDescription : rocketMQInternalFieldManager.getInternalFields().values()) {
+        for (RocketMqInternalFieldManager.InternalField fieldDescription : rocketMQInternalFieldManager.getInternalFields().values()) {
             builder.add(fieldDescription.getColumnMetadata(hideInternalColumns));
         }
 
@@ -212,14 +212,14 @@ public class RocketMQMetadata implements ConnectorMetadata {
 
     @Override
     public Optional<ConstraintApplicationResult<ConnectorTableHandle>> applyFilter(ConnectorSession session, ConnectorTableHandle table, Constraint constraint) {
-        RocketMQTableHandle handle = (RocketMQTableHandle) table;
+        RocketMqTableHandle handle = (RocketMqTableHandle) table;
         TupleDomain<ColumnHandle> oldDomain = handle.getConstraint();
         TupleDomain<ColumnHandle> newDomain = oldDomain.intersect(constraint.getSummary());
         if (oldDomain.equals(newDomain)) {
             return Optional.empty();
         }
 
-        handle = new RocketMQTableHandle(
+        handle = new RocketMqTableHandle(
                 handle.getSchemaName(),
                 handle.getTableName(),
                 handle.getTopicName(),
@@ -235,11 +235,11 @@ public class RocketMQMetadata implements ConnectorMetadata {
         return Optional.of(new ConstraintApplicationResult<>(handle, constraint.getSummary(), false));
     }
 
-    private RocketMQTopicDescription getRequiredTopicDescription(ConnectorSession session, SchemaTableName schemaTableName) {
+    private RocketMqTopicDescription getRequiredTopicDescription(ConnectorSession session, SchemaTableName schemaTableName) {
         return getTopicDescription(session, schemaTableName).orElseThrow(() -> new TableNotFoundException(schemaTableName));
     }
 
-    private Optional<RocketMQTopicDescription> getTopicDescription(ConnectorSession session, SchemaTableName schemaTableName) {
+    private Optional<RocketMqTopicDescription> getTopicDescription(ConnectorSession session, SchemaTableName schemaTableName) {
         return tableDescriptionSupplier.getTopicDescription(session, schemaTableName);
     }
 
@@ -248,14 +248,14 @@ public class RocketMQMetadata implements ConnectorMetadata {
         if (retryMode != NO_RETRIES) {
             throw new TrinoException(NOT_SUPPORTED, "This connector does not support query retries");
         }
-        RocketMQTableHandle table = (RocketMQTableHandle) tableHandle;
-        List<RocketMQColumnHandle> actualColumns = table.getColumns().stream()
+        RocketMqTableHandle table = (RocketMqTableHandle) tableHandle;
+        List<RocketMqColumnHandle> actualColumns = table.getColumns().stream()
                 .filter(columnHandle -> !columnHandle.isInternal() && !columnHandle.isHidden())
                 .collect(toImmutableList());
 
         checkArgument(columns.equals(actualColumns), "Unexpected columns!\nexpected: %s\ngot: %s", actualColumns, columns);
 
-        return new RocketMQTableHandle(
+        return new RocketMqTableHandle(
                 table.getSchemaName(),
                 table.getTableName(),
                 table.getTopicName(),

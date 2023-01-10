@@ -25,11 +25,11 @@ import io.trino.plugin.base.classloader.ClassLoaderSafeConnectorPageSinkProvider
 import io.trino.plugin.base.classloader.ClassLoaderSafeConnectorRecordSetProvider;
 import io.trino.plugin.base.classloader.ClassLoaderSafeConnectorSplitManager;
 import io.trino.plugin.base.classloader.ForClassLoaderSafe;
-import io.trino.plugin.rocketmq.record.RocketMQRecordSetProvider;
-import io.trino.plugin.rocketmq.schema.RocketMQTopicDescription;
+import io.trino.plugin.rocketmq.record.RocketMqRecordSetProvider;
+import io.trino.plugin.rocketmq.schema.RocketMqTopicDescription;
 import io.trino.plugin.rocketmq.schema.file.FileTableDescriptionSupplier;
 import io.trino.plugin.rocketmq.schema.file.FileTableDescriptionSupplierModule;
-import io.trino.plugin.rocketmq.split.RocketMQSplitManager;
+import io.trino.plugin.rocketmq.split.RocketMqSplitManager;
 import io.trino.spi.connector.ConnectorMetadata;
 import io.trino.spi.connector.ConnectorPageSinkProvider;
 import io.trino.spi.connector.ConnectorRecordSetProvider;
@@ -39,34 +39,34 @@ import static io.airlift.configuration.ConditionalModule.conditionalModule;
 import static io.airlift.configuration.ConfigBinder.configBinder;
 import static io.airlift.json.JsonCodecBinder.jsonCodecBinder;
 
-public class RocketMQConnectorModule
+public class RocketMqConnectorModule
         extends AbstractConfigurationAwareModule {
     @Override
     public void setup(Binder binder) {
-        binder.bind(ConnectorMetadata.class).annotatedWith(ForClassLoaderSafe.class).to(RocketMQMetadata.class).in(Scopes.SINGLETON);
+        binder.bind(ConnectorMetadata.class).annotatedWith(ForClassLoaderSafe.class).to(RocketMqMetadata.class).in(Scopes.SINGLETON);
         binder.bind(ConnectorMetadata.class).to(ClassLoaderSafeConnectorMetadata.class).in(Scopes.SINGLETON);
-        binder.bind(ConnectorSplitManager.class).annotatedWith(ForClassLoaderSafe.class).to(RocketMQSplitManager.class).in(Scopes.SINGLETON);
+        binder.bind(ConnectorSplitManager.class).annotatedWith(ForClassLoaderSafe.class).to(RocketMqSplitManager.class).in(Scopes.SINGLETON);
         binder.bind(ConnectorSplitManager.class).to(ClassLoaderSafeConnectorSplitManager.class).in(Scopes.SINGLETON);
-        binder.bind(ConnectorRecordSetProvider.class).annotatedWith(ForClassLoaderSafe.class).to(RocketMQRecordSetProvider.class).in(Scopes.SINGLETON);
+        binder.bind(ConnectorRecordSetProvider.class).annotatedWith(ForClassLoaderSafe.class).to(RocketMqRecordSetProvider.class).in(Scopes.SINGLETON);
         binder.bind(ConnectorRecordSetProvider.class).to(ClassLoaderSafeConnectorRecordSetProvider.class).in(Scopes.SINGLETON);
         // page sink provider
-        binder.bind(ConnectorPageSinkProvider.class).annotatedWith(ForClassLoaderSafe.class).to(RocketMQPageSinkProvider.class).in(Scopes.SINGLETON);
+        binder.bind(ConnectorPageSinkProvider.class).annotatedWith(ForClassLoaderSafe.class).to(RocketMqPageSinkProvider.class).in(Scopes.SINGLETON);
         binder.bind(ConnectorPageSinkProvider.class).to(ClassLoaderSafeConnectorPageSinkProvider.class).in(Scopes.SINGLETON);
-        binder.bind(RocketMQConnector.class).in(Scopes.SINGLETON);
-        binder.bind(RocketMQInternalFieldManager.class).in(Scopes.SINGLETON);
-        binder.bind(RocketMQFilterManager.class).in(Scopes.SINGLETON);
+        binder.bind(RocketMqConnector.class).in(Scopes.SINGLETON);
+        binder.bind(RocketMqInternalFieldManager.class).in(Scopes.SINGLETON);
+        binder.bind(RocketMqFilterManager.class).in(Scopes.SINGLETON);
 
         // build config
-        configBinder(binder).bindConfig(RocketMQConfig.class);
+        configBinder(binder).bindConfig(RocketMqConfig.class);
         // file table description
         bindTopicSchemaProviderModule(FileTableDescriptionSupplier.NAME, new FileTableDescriptionSupplierModule());
 
-        jsonCodecBinder(binder).bindJsonCodec(RocketMQTopicDescription.class);
+        jsonCodecBinder(binder).bindJsonCodec(RocketMqTopicDescription.class);
     }
 
     public void bindTopicSchemaProviderModule(String name, Module module) {
         install(conditionalModule(
-                RocketMQConfig.class,
+                RocketMqConfig.class,
                 rocketMQConfig -> name.equalsIgnoreCase(rocketMQConfig.getTableDescriptionSupplier()),
                 module));
     }

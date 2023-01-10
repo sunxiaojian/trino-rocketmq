@@ -16,8 +16,16 @@
  */
 package io.trino.plugin.rocketmq;
 
-import io.trino.spi.connector.ConnectorTransactionHandle;
+import com.google.inject.Binder;
+import com.google.inject.Scopes;
+import io.airlift.configuration.AbstractConfigurationAwareModule;
 
-public enum RocketMQTransactionHandle implements ConnectorTransactionHandle {
-    INSTANCE
+public class RocketMqClientsModule extends AbstractConfigurationAwareModule {
+    @Override
+    protected void setup(Binder binder) {
+        // consumer
+        binder.bind(RocketMqConsumerFactory.class).to(DefaultRocketMqConsumerFactory.class).in(Scopes.SINGLETON);
+        // producer
+        binder.bind(RocketMqProducerFactory.class).to(DefaultRocketMqProducerFactory.class).in(Scopes.SINGLETON);
+    }
 }

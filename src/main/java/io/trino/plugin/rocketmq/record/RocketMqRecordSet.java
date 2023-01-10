@@ -18,9 +18,9 @@
 package io.trino.plugin.rocketmq.record;
 
 import io.trino.decoder.RowDecoder;
-import io.trino.plugin.rocketmq.RocketMQColumnHandle;
-import io.trino.plugin.rocketmq.RocketMQConsumerFactory;
-import io.trino.plugin.rocketmq.split.RocketMQSplit;
+import io.trino.plugin.rocketmq.RocketMqColumnHandle;
+import io.trino.plugin.rocketmq.RocketMqConsumerFactory;
+import io.trino.plugin.rocketmq.split.RocketMqSplit;
 import io.trino.spi.connector.ConnectorSession;
 import io.trino.spi.connector.RecordCursor;
 import io.trino.spi.connector.RecordSet;
@@ -33,18 +33,18 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 /**
  * rocketmq record set
  */
-public class RocketMQRecordSet implements RecordSet {
-    private final RocketMQSplit split;
-    private final RocketMQConsumerFactory consumerFactory;
-    private final List<RocketMQColumnHandle> columnHandles;
+public class RocketMqRecordSet implements RecordSet {
+    private final RocketMqSplit split;
+    private final RocketMqConsumerFactory consumerFactory;
+    private final List<RocketMqColumnHandle> columnHandles;
     private final ConnectorSession connectorSession;
     private final RowDecoder keyDecoder;
     private final RowDecoder messageDecoder;
     private final List<Type> columnTypes;
 
-    public RocketMQRecordSet(RocketMQSplit split,
-                             RocketMQConsumerFactory consumerFactory,
-                             List<RocketMQColumnHandle> columnHandles,
+    public RocketMqRecordSet(RocketMqSplit split,
+                             RocketMqConsumerFactory consumerFactory,
+                             List<RocketMqColumnHandle> columnHandles,
                              ConnectorSession connectorSession,
                              RowDecoder keyDecoder,
                              RowDecoder messageDecoder) {
@@ -55,7 +55,7 @@ public class RocketMQRecordSet implements RecordSet {
         this.keyDecoder = keyDecoder;
         this.messageDecoder = messageDecoder;
         this.columnTypes = columnHandles.stream()
-                .map(RocketMQColumnHandle::getType)
+                .map(RocketMqColumnHandle::getType)
                 .collect(toImmutableList());
 
     }
@@ -67,7 +67,7 @@ public class RocketMQRecordSet implements RecordSet {
 
     @Override
     public RecordCursor cursor() {
-        return new RocketMQRecordCursor(
+        return new RocketMqRecordCursor(
                 split,
                 consumerFactory,
                 columnHandles,

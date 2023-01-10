@@ -23,10 +23,10 @@ import com.google.common.collect.ImmutableSet;
 import io.airlift.json.JsonCodec;
 import io.airlift.log.Logger;
 import io.trino.decoder.dummy.DummyRowDecoder;
-import io.trino.plugin.rocketmq.RocketMQConfig;
+import io.trino.plugin.rocketmq.RocketMqConfig;
 import io.trino.plugin.rocketmq.schema.MapBasedTableDescriptionSupplier;
-import io.trino.plugin.rocketmq.schema.RocketMQTopicDescription;
-import io.trino.plugin.rocketmq.schema.RocketMQTopicFieldGroup;
+import io.trino.plugin.rocketmq.schema.RocketMqTopicDescription;
+import io.trino.plugin.rocketmq.schema.RocketMqTopicFieldGroup;
 import io.trino.plugin.rocketmq.schema.TableDescriptionSupplier;
 import io.trino.spi.connector.SchemaTableName;
 
@@ -49,13 +49,13 @@ import static java.util.Objects.requireNonNull;
 public class FileTableDescriptionSupplier implements Provider<TableDescriptionSupplier> {
     public static final String NAME = "file";
     private static final Logger log = Logger.get(FileTableDescriptionSupplier.class);
-    private final JsonCodec<RocketMQTopicDescription> topicDescriptionCodec;
+    private final JsonCodec<RocketMqTopicDescription> topicDescriptionCodec;
     private final File tableDescriptionDir;
     private final String defaultSchema;
     private final Set<String> tableNames;
 
     @Inject
-    FileTableDescriptionSupplier(FileTableDescriptionSupplierConfig config, RocketMQConfig rocketMQConfig, JsonCodec<RocketMQTopicDescription> topicDescriptionCodec) {
+    FileTableDescriptionSupplier(FileTableDescriptionSupplierConfig config, RocketMqConfig rocketMQConfig, JsonCodec<RocketMqTopicDescription> topicDescriptionCodec) {
         this.topicDescriptionCodec = requireNonNull(topicDescriptionCodec, "Topic description codec is null");
         this.tableDescriptionDir = config.getTableDescriptionDir();
         this.defaultSchema = rocketMQConfig.getDefaultSchema();
@@ -64,25 +64,25 @@ public class FileTableDescriptionSupplier implements Provider<TableDescriptionSu
 
     @Override
     public TableDescriptionSupplier get() {
-        Map<SchemaTableName, RocketMQTopicDescription> tables = populateTables();
+        Map<SchemaTableName, RocketMqTopicDescription> tables = populateTables();
         return new MapBasedTableDescriptionSupplier(tables);
     }
 
-    private Map<SchemaTableName, RocketMQTopicDescription> populateTables() {
-        ImmutableMap.Builder<SchemaTableName, RocketMQTopicDescription> builder = ImmutableMap.builder();
+    private Map<SchemaTableName, RocketMqTopicDescription> populateTables() {
+        ImmutableMap.Builder<SchemaTableName, RocketMqTopicDescription> builder = ImmutableMap.builder();
         log.debug("Loading rocketmq table definitions from %s", tableDescriptionDir.getAbsolutePath());
 
         try {
             for (File file : listFiles(tableDescriptionDir)) {
                 if (file.isFile() && file.getName().endsWith(".json")) {
-                    RocketMQTopicDescription table = topicDescriptionCodec.fromJson(readAllBytes(file.toPath()));
+                    RocketMqTopicDescription table = topicDescriptionCodec.fromJson(readAllBytes(file.toPath()));
                     String schemaName = table.getSchemaName().orElse(defaultSchema);
                     log.debug("Kafka table %s.%s: %s", schemaName, table.getTableName(), table);
                     builder.put(new SchemaTableName(schemaName, table.getTableName()), table);
                 }
             }
 
-            Map<SchemaTableName, RocketMQTopicDescription> tableDefinitions = builder.buildOrThrow();
+            Map<SchemaTableName, RocketMqTopicDescription> tableDefinitions = builder.buildOrThrow();
             log.debug("Loaded Table definitions: %s", tableDefinitions.keySet());
             builder = ImmutableMap.builder();
             for (String definedTable : tableNames) {
@@ -93,7 +93,7 @@ public class FileTableDescriptionSupplier implements Provider<TableDescriptionSu
                     tableName = new SchemaTableName(defaultSchema, definedTable);
                 }
                 if (tableDefinitions.containsKey(tableName)) {
-                    RocketMQTopicDescription rocketmqTable = tableDefinitions.get(tableName);
+                    RocketMqTopicDescription rocketmqTable = tableDefinitions.get(tableName);
                     log.debug("Found Table definition for %s: %s", tableName, rocketmqTable);
                     builder.put(tableName, rocketmqTable);
                 }
@@ -102,12 +102,12 @@ public class FileTableDescriptionSupplier implements Provider<TableDescriptionSu
                     log.debug("Created dummy Table definition for %s", tableName);
                     builder.put(
                             tableName,
-                            new RocketMQTopicDescription(
+                            new RocketMqTopicDescription(
                                     tableName.getTableName(),
                                     Optional.ofNullable(tableName.getSchemaName()),
                                     definedTable,
-                                    Optional.of(new RocketMQTopicFieldGroup(DummyRowDecoder.NAME, Optional.empty(), Optional.empty(), ImmutableList.of())),
-                                    Optional.of(new RocketMQTopicFieldGroup(DummyRowDecoder.NAME, Optional.empty(), Optional.empty(), ImmutableList.of())))
+                                    Optional.of(new RocketMqTopicFieldGroup(DummyRowDecoder.NAME, Optional.empty(), Optional.empty(), ImmutableList.of())),
+                                    Optional.of(new RocketMqTopicFieldGroup(DummyRowDecoder.NAME, Optional.empty(), Optional.empty(), ImmutableList.of())))
                     );
                 }
             }

@@ -19,11 +19,11 @@ package io.trino.plugin.rocketmq.split;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import io.trino.plugin.rocketmq.RocketMQConfig;
-import io.trino.plugin.rocketmq.RocketMQConsumerFactory;
-import io.trino.plugin.rocketmq.RocketMQFilterManager;
-import io.trino.plugin.rocketmq.RocketMQFilteringResult;
-import io.trino.plugin.rocketmq.RocketMQTableHandle;
+import io.trino.plugin.rocketmq.RocketMqConfig;
+import io.trino.plugin.rocketmq.RocketMqConsumerFactory;
+import io.trino.plugin.rocketmq.RocketMqFilterManager;
+import io.trino.plugin.rocketmq.RocketMqFilteringResult;
+import io.trino.plugin.rocketmq.RocketMqTableHandle;
 import io.trino.plugin.rocketmq.schema.ContentSchemaReader;
 import io.trino.spi.connector.ConnectorSession;
 import io.trino.spi.connector.ConnectorSplitManager;
@@ -52,15 +52,15 @@ import static java.util.Objects.requireNonNull;
 /**
  * RocketMQ topic split manager
  */
-public class RocketMQSplitManager implements ConnectorSplitManager {
+public class RocketMqSplitManager implements ConnectorSplitManager {
 
-    private final RocketMQConsumerFactory consumerFactory;
+    private final RocketMqConsumerFactory consumerFactory;
     private final ContentSchemaReader contentSchemaReader;
     private final int messagesPerSplit;
-    private final RocketMQFilterManager filterManager;
+    private final RocketMqFilterManager filterManager;
 
     @Inject
-    public RocketMQSplitManager(RocketMQConsumerFactory consumerFactory, RocketMQConfig config, ContentSchemaReader contentSchemaReader, RocketMQFilterManager filterManager) {
+    public RocketMqSplitManager(RocketMqConsumerFactory consumerFactory, RocketMqConfig config, ContentSchemaReader contentSchemaReader, RocketMqFilterManager filterManager) {
         this.consumerFactory = requireNonNull(consumerFactory, "consumerFactory is null");
         this.messagesPerSplit = config.getMessagesPerSplit();
         this.contentSchemaReader = requireNonNull(contentSchemaReader, "contentSchemaReader is null");
@@ -75,8 +75,8 @@ public class RocketMQSplitManager implements ConnectorSplitManager {
             DynamicFilter dynamicFilter,
             Constraint constraint) {
 
-        ImmutableList.Builder<RocketMQSplit> splits = ImmutableList.builder();
-        RocketMQTableHandle tableHandle = (RocketMQTableHandle) table;
+        ImmutableList.Builder<RocketMqSplit> splits = ImmutableList.builder();
+        RocketMqTableHandle tableHandle = (RocketMqTableHandle) table;
         DefaultMQAdminExt adminClient = consumerFactory.admin(session);
         try {
 
@@ -88,14 +88,14 @@ public class RocketMQSplitManager implements ConnectorSplitManager {
             Optional<String> keyDataSchemaContents = contentSchemaReader.readKeyContentSchema(tableHandle);
             Optional<String> messageDataSchemaContents = contentSchemaReader.readValueContentSchema(tableHandle);
 
-            RocketMQFilteringResult filterResult= filterManager.filter(session, tableHandle, Lists.newArrayList(offsets.keySet()),  offsets);
+            RocketMqFilteringResult filterResult= filterManager.filter(session, tableHandle, Lists.newArrayList(offsets.keySet()),  offsets);
             for (Map.Entry<MessageQueue, TopicOffset> offset : filterResult.getMessageQueueTopicOffsets().entrySet()) {
                 // build rocketmq split
                 MessageQueue queue = offset.getKey();
                 TopicOffset topicOffset = offset.getValue();
                 List<Range> ranges = new Range(topicOffset.getMinOffset(), topicOffset.getMaxOffset())
                         .partition(messagesPerSplit);
-                ranges.stream().map(range -> new RocketMQSplit(
+                ranges.stream().map(range -> new RocketMqSplit(
                         tableHandle.getTopicName(),
                         tableHandle.getKeyDataFormat(),
                         tableHandle.getMessageDataFormat(),

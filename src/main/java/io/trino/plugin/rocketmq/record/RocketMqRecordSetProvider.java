@@ -20,9 +20,9 @@ package io.trino.plugin.rocketmq.record;
 import com.google.common.collect.ImmutableMap;
 import io.trino.decoder.DispatchingRowDecoderFactory;
 import io.trino.decoder.RowDecoder;
-import io.trino.plugin.rocketmq.RocketMQColumnHandle;
-import io.trino.plugin.rocketmq.RocketMQConsumerFactory;
-import io.trino.plugin.rocketmq.split.RocketMQSplit;
+import io.trino.plugin.rocketmq.RocketMqColumnHandle;
+import io.trino.plugin.rocketmq.RocketMqConsumerFactory;
+import io.trino.plugin.rocketmq.split.RocketMqSplit;
 import io.trino.spi.connector.ColumnHandle;
 import io.trino.spi.connector.ConnectorRecordSetProvider;
 import io.trino.spi.connector.ConnectorSession;
@@ -43,13 +43,13 @@ import static java.util.Objects.requireNonNull;
 /**
  * rocketmq record set provider
  */
-public class RocketMQRecordSetProvider implements ConnectorRecordSetProvider {
+public class RocketMqRecordSetProvider implements ConnectorRecordSetProvider {
 
     private final DispatchingRowDecoderFactory decoderFactory;
-    private final RocketMQConsumerFactory consumerFactory;
+    private final RocketMqConsumerFactory consumerFactory;
 
     @Inject
-    public RocketMQRecordSetProvider(DispatchingRowDecoderFactory decoderFactory, RocketMQConsumerFactory consumerFactory) {
+    public RocketMqRecordSetProvider(DispatchingRowDecoderFactory decoderFactory, RocketMqConsumerFactory consumerFactory) {
         this.decoderFactory = requireNonNull(decoderFactory, "decoderFactory is null");
         this.consumerFactory = requireNonNull(consumerFactory, "consumerFactory is null");
     }
@@ -62,10 +62,10 @@ public class RocketMQRecordSetProvider implements ConnectorRecordSetProvider {
 
     @Override
     public RecordSet getRecordSet(ConnectorTransactionHandle transaction, ConnectorSession session, ConnectorSplit split, ConnectorTableHandle table, List<? extends ColumnHandle> columns) {
-        RocketMQSplit rocketMQSplit = (RocketMQSplit) split;
+        RocketMqSplit rocketMQSplit = (RocketMqSplit) split;
 
-        List<RocketMQColumnHandle> rocketMQColumnHandles = columns.stream()
-                .map(RocketMQColumnHandle.class::cast)
+        List<RocketMqColumnHandle> rocketMQColumnHandles = columns.stream()
+                .map(RocketMqColumnHandle.class::cast)
                 .collect(toImmutableList());
 
         RowDecoder keyDecoder = decoderFactory.create(
@@ -73,7 +73,7 @@ public class RocketMQRecordSetProvider implements ConnectorRecordSetProvider {
                 getDecoderParameters(rocketMQSplit.getKeyDataSchemaContents()),
                 rocketMQColumnHandles.stream()
                         .filter(col -> !col.isInternal())
-                        .filter(RocketMQColumnHandle::isKeyCodec)
+                        .filter(RocketMqColumnHandle::isKeyCodec)
                         .collect(toImmutableSet()));
 
         RowDecoder messageDecoder = decoderFactory.create(
@@ -84,6 +84,6 @@ public class RocketMQRecordSetProvider implements ConnectorRecordSetProvider {
                         .filter(col -> !col.isKeyCodec())
                         .collect(toImmutableSet()));
 
-        return new RocketMQRecordSet(rocketMQSplit, consumerFactory, rocketMQColumnHandles, session, keyDecoder, messageDecoder);
+        return new RocketMqRecordSet(rocketMQSplit, consumerFactory, rocketMQColumnHandles, session, keyDecoder, messageDecoder);
     }
 }

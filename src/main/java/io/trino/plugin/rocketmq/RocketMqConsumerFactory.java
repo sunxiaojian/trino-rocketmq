@@ -14,26 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.trino.plugin.rocketmq;
 
-import io.trino.spi.connector.ConnectorInsertTableHandle;
-import io.trino.spi.connector.ConnectorOutputTableHandle;
-import io.trino.spi.connector.ConnectorPageSink;
-import io.trino.spi.connector.ConnectorPageSinkProvider;
+import io.trino.spi.HostAddress;
 import io.trino.spi.connector.ConnectorSession;
-import io.trino.spi.connector.ConnectorTransactionHandle;
+import org.apache.rocketmq.client.consumer.DefaultLitePullConsumer;
+import org.apache.rocketmq.tools.admin.DefaultMQAdminExt;
 
 /**
- * rocketmq page sink provider
+ * rocketmq consumer factory
  */
-public class RocketMQPageSinkProvider implements ConnectorPageSinkProvider {
-    @Override
-    public ConnectorPageSink createPageSink(ConnectorTransactionHandle transactionHandle, ConnectorSession session, ConnectorOutputTableHandle outputTableHandle) {
-        return null;
+public interface RocketMqConsumerFactory {
+
+    default DefaultLitePullConsumer create(ConnectorSession session)
+    {
+        return consumer(session);
     }
 
-    @Override
-    public ConnectorPageSink createPageSink(ConnectorTransactionHandle transactionHandle, ConnectorSession session, ConnectorInsertTableHandle insertTableHandle) {
-        return null;
-    }
+    DefaultLitePullConsumer consumer(ConnectorSession session);
+
+    DefaultMQAdminExt admin(ConnectorSession session);
+
+    HostAddress hostAddress();
 }

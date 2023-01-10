@@ -14,88 +14,127 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.trino.plugin.rocketmq.schema;
+
+package io.trino.plugin.rocketmq;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.trino.plugin.rocketmq.RocketMQColumnHandle;
+import io.trino.decoder.DecoderColumnHandle;
+import io.trino.plugin.rocketmq.encoder.EncoderColumnHandle;
 import io.trino.spi.connector.ColumnMetadata;
 import io.trino.spi.type.Type;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**
- * RocketMQ topic field description
+ * rocketmq column handle
  */
-public final class RocketMQTopicFieldDescription {
+public final class RocketMqColumnHandle
+        implements EncoderColumnHandle, DecoderColumnHandle
+{
+    /**
+     * Column Name
+     */
     private final String name;
+
+    /**
+     * Column type
+     */
     private final Type type;
+
+    /**
+     * Mapping hint for the codec. Can be null.
+     */
     private final String mapping;
-    private final String comment;
+
+    /**
+     * Data format to use (selects the codec). Can be null.
+     */
     private final String dataFormat;
+
+    /**
+     * Additional format hint for the selected codec. Selects a codec subtype (e.g. which timestamp codec).
+     */
     private final String formatHint;
+
+    /**
+     * True if the key codec should be used, false if the message codec should be used.
+     */
+    private final boolean keyCodec;
+
+    /**
+     * True if the column should be hidden.
+     */
     private final boolean hidden;
 
+    /**
+     * True if the column is internal to the connector and not defined by a topic definition.
+     */
+    private final boolean internal;
+
     @JsonCreator
-    public RocketMQTopicFieldDescription(
+    public RocketMqColumnHandle(
             @JsonProperty("name") String name,
             @JsonProperty("type") Type type,
             @JsonProperty("mapping") String mapping,
-            @JsonProperty("comment") String comment,
             @JsonProperty("dataFormat") String dataFormat,
             @JsonProperty("formatHint") String formatHint,
-            @JsonProperty("hidden") boolean hidden)
+            @JsonProperty("keyCodec") boolean keyCodec,
+            @JsonProperty("hidden") boolean hidden,
+            @JsonProperty("internal") boolean internal)
     {
-        checkArgument(!isNullOrEmpty(name), "name is null or is empty");
-        this.name = name;
+        this.name = requireNonNull(name, "name is null");
         this.type = requireNonNull(type, "type is null");
         this.mapping = mapping;
-        this.comment = comment;
         this.dataFormat = dataFormat;
         this.formatHint = formatHint;
+        this.keyCodec = keyCodec;
         this.hidden = hidden;
+        this.internal = internal;
     }
 
+    @Override
     @JsonProperty
     public String getName()
     {
         return name;
     }
 
+    @Override
     @JsonProperty
     public Type getType()
     {
         return type;
     }
 
+    @Override
     @JsonProperty
     public String getMapping()
     {
         return mapping;
     }
 
-    @JsonProperty
-    public String getComment()
-    {
-        return comment;
-    }
-
+    @Override
     @JsonProperty
     public String getDataFormat()
     {
         return dataFormat;
     }
 
+    @Override
     @JsonProperty
     public String getFormatHint()
     {
         return formatHint;
+    }
+
+    @JsonProperty
+    public boolean isKeyCodec()
+    {
+        return keyCodec;
     }
 
     @JsonProperty
@@ -104,31 +143,26 @@ public final class RocketMQTopicFieldDescription {
         return hidden;
     }
 
-    public RocketMQColumnHandle getColumnHandle(boolean keyCodec, int index) {
-        return new RocketMQColumnHandle(
-                getName(),
-                getType(),
-                getMapping(),
-                getDataFormat(),
-                getFormatHint(),
-                keyCodec,
-                isHidden(),
-                false);
+    @Override
+    @JsonProperty
+    public boolean isInternal()
+    {
+        return internal;
     }
 
-    public ColumnMetadata getColumnMetadata() {
+    ColumnMetadata getColumnMetadata()
+    {
         return ColumnMetadata.builder()
-                .setName(getName())
-                .setType(getType())
-                .setComment(Optional.ofNullable(getComment()))
-                .setHidden(isHidden())
+                .setName(name)
+                .setType(type)
+                .setHidden(hidden)
                 .build();
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(name, type, mapping, dataFormat, formatHint, hidden);
+        return Objects.hash(name, type, mapping, dataFormat, formatHint, keyCodec, hidden, internal);
     }
 
     @Override
@@ -141,13 +175,15 @@ public final class RocketMQTopicFieldDescription {
             return false;
         }
 
-        RocketMQTopicFieldDescription other = (RocketMQTopicFieldDescription) obj;
+        RocketMqColumnHandle other = (RocketMqColumnHandle) obj;
         return Objects.equals(this.name, other.name) &&
                 Objects.equals(this.type, other.type) &&
                 Objects.equals(this.mapping, other.mapping) &&
                 Objects.equals(this.dataFormat, other.dataFormat) &&
                 Objects.equals(this.formatHint, other.formatHint) &&
-                Objects.equals(this.hidden, other.hidden);
+                Objects.equals(this.keyCodec, other.keyCodec) &&
+                Objects.equals(this.hidden, other.hidden) &&
+                Objects.equals(this.internal, other.internal);
     }
 
     @Override
@@ -159,7 +195,9 @@ public final class RocketMQTopicFieldDescription {
                 .add("mapping", mapping)
                 .add("dataFormat", dataFormat)
                 .add("formatHint", formatHint)
+                .add("keyCodec", keyCodec)
                 .add("hidden", hidden)
+                .add("internal", internal)
                 .toString();
     }
 }

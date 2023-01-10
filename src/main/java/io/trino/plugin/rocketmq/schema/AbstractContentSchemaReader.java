@@ -16,17 +16,17 @@
  */
 package io.trino.plugin.rocketmq.schema;
 
-import io.trino.plugin.rocketmq.RocketMQTableHandle;
+import io.trino.plugin.rocketmq.RocketMqTableHandle;
 import java.util.Optional;
 
 public abstract class AbstractContentSchemaReader implements ContentSchemaReader {
     @Override
-    public final Optional<String> readKeyContentSchema(RocketMQTableHandle tableHandle) {
+    public final Optional<String> readKeyContentSchema(RocketMqTableHandle tableHandle) {
         return readSchema(tableHandle.getKeySchemaLocation(), tableHandle.getKeySubject());
     }
 
     @Override
-    public final Optional<String> readValueContentSchema(RocketMQTableHandle tableHandle) {
+    public final Optional<String> readValueContentSchema(RocketMqTableHandle tableHandle) {
         return readSchema(tableHandle.getValueSchemaLocation(), tableHandle.getMessageSubject());
     }
 

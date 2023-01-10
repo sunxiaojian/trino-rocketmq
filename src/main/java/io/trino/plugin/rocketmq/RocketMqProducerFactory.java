@@ -14,33 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.trino.plugin.rocketmq;
 
-import com.google.common.collect.ImmutableList;
-import com.google.inject.Binder;
-import com.google.inject.Module;
-import io.airlift.configuration.AbstractConfigurationAwareModule;
-import io.trino.spi.Plugin;
-import io.trino.spi.connector.ConnectorFactory;
+import io.trino.spi.connector.ConnectorSession;
+import org.apache.rocketmq.client.producer.DefaultMQProducer;
 
 /**
- * rocketmq plugin
+ * rocketmq producer factory
  */
-public class RocketMQPlugin implements Plugin {
-    public static final Module DEFAULT_EXTENSION = new AbstractConfigurationAwareModule() {
-        @Override
-        protected void setup(Binder binder) {
-            install(new RocketMQClientsModule());
-        }
-    };
+public interface RocketMqProducerFactory {
 
-    /**
-     * Get connector factory
-     * @return
-     */
-    @Override
-    public Iterable<ConnectorFactory> getConnectorFactories() {
-        return ImmutableList.of(new RocketMQConnectorFactory(DEFAULT_EXTENSION));
+    default DefaultMQProducer create(ConnectorSession session) {
+        return producer(session);
     }
+    DefaultMQProducer producer(ConnectorSession session);
 }

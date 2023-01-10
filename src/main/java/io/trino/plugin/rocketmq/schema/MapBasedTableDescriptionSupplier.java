@@ -31,9 +31,9 @@ import static java.util.Objects.requireNonNull;
  * map based table description supplier
  */
 public class MapBasedTableDescriptionSupplier implements TableDescriptionSupplier {
-    private final Map<SchemaTableName, RocketMQTopicDescription> map;
+    private final Map<SchemaTableName, RocketMqTopicDescription> map;
 
-    public MapBasedTableDescriptionSupplier(Map<SchemaTableName, RocketMQTopicDescription> map) {
+    public MapBasedTableDescriptionSupplier(Map<SchemaTableName, RocketMqTopicDescription> map) {
         this.map = ImmutableMap.copyOf(requireNonNull(map, "map is null"));
     }
 
@@ -43,7 +43,7 @@ public class MapBasedTableDescriptionSupplier implements TableDescriptionSupplie
     }
 
     @Override
-    public Optional<RocketMQTopicDescription> getTopicDescription(ConnectorSession session, SchemaTableName schemaTableName) {
+    public Optional<RocketMqTopicDescription> getTopicDescription(ConnectorSession session, SchemaTableName schemaTableName) {
         return Optional.ofNullable(map.get(schemaTableName));
     }
 }

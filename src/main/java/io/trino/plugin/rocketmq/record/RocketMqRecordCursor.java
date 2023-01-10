@@ -23,9 +23,9 @@ import io.airlift.slice.Slice;
 import io.trino.decoder.DecoderColumnHandle;
 import io.trino.decoder.FieldValueProvider;
 import io.trino.decoder.RowDecoder;
-import io.trino.plugin.rocketmq.RocketMQColumnHandle;
-import io.trino.plugin.rocketmq.RocketMQConsumerFactory;
-import io.trino.plugin.rocketmq.split.RocketMQSplit;
+import io.trino.plugin.rocketmq.RocketMqColumnHandle;
+import io.trino.plugin.rocketmq.RocketMqConsumerFactory;
+import io.trino.plugin.rocketmq.split.RocketMqSplit;
 import io.trino.spi.block.Block;
 import io.trino.spi.block.BlockBuilder;
 import io.trino.spi.connector.ColumnHandle;
@@ -49,16 +49,16 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkArgument;
 import static io.trino.decoder.FieldValueProviders.bytesValueProvider;
 import static io.trino.decoder.FieldValueProviders.longValueProvider;
-import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.BROKER_NAME;
-import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.KEY_FIELD;
-import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.KEY_LENGTH_FIELD;
-import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.MESSAGE_FIELD;
-import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.MESSAGE_LENGTH_FIELD;
+import static io.trino.plugin.rocketmq.RocketMqInternalFieldManager.BROKER_NAME;
+import static io.trino.plugin.rocketmq.RocketMqInternalFieldManager.KEY_FIELD;
+import static io.trino.plugin.rocketmq.RocketMqInternalFieldManager.KEY_LENGTH_FIELD;
+import static io.trino.plugin.rocketmq.RocketMqInternalFieldManager.MESSAGE_FIELD;
+import static io.trino.plugin.rocketmq.RocketMqInternalFieldManager.MESSAGE_LENGTH_FIELD;
 //import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.MESSAGE_PROPERTIES;
-import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.MSG_ID;
-import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.OFFSET_TIMESTAMP_FIELD;
-import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.QUEUE_ID_FIELD;
-import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.QUEUE_OFFSET_FIELD;
+import static io.trino.plugin.rocketmq.RocketMqInternalFieldManager.MSG_ID;
+import static io.trino.plugin.rocketmq.RocketMqInternalFieldManager.OFFSET_TIMESTAMP_FIELD;
+import static io.trino.plugin.rocketmq.RocketMqInternalFieldManager.QUEUE_ID_FIELD;
+import static io.trino.plugin.rocketmq.RocketMqInternalFieldManager.QUEUE_OFFSET_FIELD;
 import static io.trino.spi.type.Timestamps.MICROSECONDS_PER_MILLISECOND;
 import static io.trino.spi.type.TypeUtils.writeNativeValue;
 import static java.lang.Math.max;
@@ -68,13 +68,13 @@ import static java.util.Objects.requireNonNull;
 /**
  * RocketMQ record cursor
  */
-public class RocketMQRecordCursor implements RecordCursor {
+public class RocketMqRecordCursor implements RecordCursor {
 
     private static final int CONSUMER_POLL_TIMEOUT = 3000;
-    private final RocketMQSplit split;
+    private final RocketMqSplit split;
     private final MessageQueue messageQueue;
     private final DefaultLitePullConsumer defaultLitePullConsumer;
-    private final List<RocketMQColumnHandle> columnHandles;
+    private final List<RocketMqColumnHandle> columnHandles;
     private final RowDecoder keyDecoder;
     private final RowDecoder messageDecoder;
     private final FieldValueProvider[] currentRowValues;
@@ -82,10 +82,10 @@ public class RocketMQRecordCursor implements RecordCursor {
     // calc all bytes
     private long completedBytes;
 
-    public RocketMQRecordCursor(
-            RocketMQSplit split,
-            RocketMQConsumerFactory consumerFactory,
-            List<RocketMQColumnHandle> columnHandles,
+    public RocketMqRecordCursor(
+            RocketMqSplit split,
+            RocketMqConsumerFactory consumerFactory,
+            List<RocketMqColumnHandle> columnHandles,
             ConnectorSession connectorSession,
             RowDecoder keyDecoder,
             RowDecoder messageDecoder

@@ -30,19 +30,19 @@ import static java.util.Objects.requireNonNull;
 /**
  * Groups the field descriptions for message or key.
  */
-public class RocketMQTopicFieldGroup
+public class RocketMqTopicFieldGroup
 {
     private final String dataFormat;
     private final Optional<String> dataSchema;
     private final Optional<String> subject;
-    private final List<RocketMQTopicFieldDescription> fields;
+    private final List<RocketMqTopicFieldDescription> fields;
 
     @JsonCreator
-    public RocketMQTopicFieldGroup(
+    public RocketMqTopicFieldGroup(
             @JsonProperty("dataFormat") String dataFormat,
             @JsonProperty("dataSchema") Optional<String> dataSchema,
             @JsonProperty("subject") Optional<String> subject,
-            @JsonProperty("fields") List<RocketMQTopicFieldDescription> fields)
+            @JsonProperty("fields") List<RocketMqTopicFieldDescription> fields)
     {
         this.dataFormat = requireNonNull(dataFormat, "dataFormat is null");
         this.dataSchema = requireNonNull(dataSchema, "dataSchema is null");
@@ -57,7 +57,7 @@ public class RocketMQTopicFieldGroup
     }
 
     @JsonProperty
-    public List<RocketMQTopicFieldDescription> getFields()
+    public List<RocketMqTopicFieldDescription> getFields()
     {
         return fields;
     }
@@ -90,7 +90,7 @@ public class RocketMQTopicFieldGroup
             return false;
         }
 
-        RocketMQTopicFieldGroup other = (RocketMQTopicFieldGroup) obj;
+        RocketMqTopicFieldGroup other = (RocketMqTopicFieldGroup) obj;
         return Objects.equals(this.dataFormat, other.dataFormat) &&
                 Objects.equals(this.dataSchema, other.dataSchema) &&
                 Objects.equals(this.subject, other.subject) &&

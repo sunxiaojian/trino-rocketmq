@@ -33,7 +33,7 @@ import java.util.Optional;
 import static com.google.common.base.MoreObjects.toStringHelper;
 import static java.util.Objects.requireNonNull;
 
-public final class RocketMQTableHandle implements ConnectorTableHandle, ConnectorInsertTableHandle {
+public final class RocketMqTableHandle implements ConnectorTableHandle, ConnectorInsertTableHandle {
 
     /**
      * The schema name used by Trino
@@ -67,11 +67,11 @@ public final class RocketMQTableHandle implements ConnectorTableHandle, Connecto
     private final Optional<String> valueSchemaLocation;
     private final Optional<String> keySubject;
     private final Optional<String> messageSubject;
-    private final List<RocketMQColumnHandle> columns;
+    private final List<RocketMqColumnHandle> columns;
     private final TupleDomain<ColumnHandle> constraint;
 
     @JsonCreator
-    public RocketMQTableHandle(
+    public RocketMqTableHandle(
             @JsonProperty("schemaName") String schemaName,
             @JsonProperty("tableName") String tableName,
             @JsonProperty("topicName") String topicName,
@@ -81,7 +81,7 @@ public final class RocketMQTableHandle implements ConnectorTableHandle, Connecto
             @JsonProperty("messageDataSchemaLocation") Optional<String> messageDataSchemaLocation,
             @JsonProperty("keySubject") Optional<String> keySubject,
             @JsonProperty("messageSubject") Optional<String> messageSubject,
-            @JsonProperty("columns") List<RocketMQColumnHandle> columns,
+            @JsonProperty("columns") List<RocketMqColumnHandle> columns,
             @JsonProperty("constraint") TupleDomain<ColumnHandle> constraint) {
         this.schemaName = requireNonNull(schemaName, "Schema name is null");
         this.tableName = requireNonNull(tableName, "Table name is null");
@@ -142,7 +142,7 @@ public final class RocketMQTableHandle implements ConnectorTableHandle, Connecto
     }
 
     @JsonProperty
-    public List<RocketMQColumnHandle> getColumns() {
+    public List<RocketMqColumnHandle> getColumns() {
         return columns;
     }
 
@@ -180,7 +180,7 @@ public final class RocketMQTableHandle implements ConnectorTableHandle, Connecto
             return false;
         }
 
-        RocketMQTableHandle other = (RocketMQTableHandle) obj;
+        RocketMqTableHandle other = (RocketMqTableHandle) obj;
         return Objects.equals(this.schemaName, other.schemaName)
                 && Objects.equals(this.tableName, other.tableName)
                 && Objects.equals(this.topicName, other.topicName)

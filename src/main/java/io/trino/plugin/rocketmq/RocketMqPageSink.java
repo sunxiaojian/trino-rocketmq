@@ -16,16 +16,29 @@
  */
 package io.trino.plugin.rocketmq;
 
-import io.trino.spi.connector.ConnectorSession;
-import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import io.airlift.slice.Slice;
+import io.trino.spi.Page;
+import io.trino.spi.connector.ConnectorPageSink;
+
+import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 
 /**
- * rocketmq producer factory
+ * RocketMQ page sink
  */
-public interface RocketMQProducerFactory {
-
-    default DefaultMQProducer create(ConnectorSession session) {
-        return producer(session);
+public class RocketMqPageSink implements ConnectorPageSink {
+    @Override
+    public CompletableFuture<?> appendPage(Page page) {
+        return null;
     }
-    DefaultMQProducer producer(ConnectorSession session);
+
+    @Override
+    public CompletableFuture<Collection<Slice>> finish() {
+        return null;
+    }
+
+    @Override
+    public void abort() {
+
+    }
 }

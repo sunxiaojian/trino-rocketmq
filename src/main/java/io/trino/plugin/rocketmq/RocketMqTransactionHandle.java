@@ -14,33 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.trino.plugin.rocketmq;
 
-import org.apache.rocketmq.common.admin.TopicOffset;
-import org.apache.rocketmq.common.message.MessageQueue;
+import io.trino.spi.connector.ConnectorTransactionHandle;
 
-import java.util.List;
-import java.util.Map;
-
-/**
- * rocketmq filter result
- */
-public class RocketMQFilteringResult {
-
-    private final List<MessageQueue> messageQueues;
-    private final Map<MessageQueue, TopicOffset> messageQueueTopicOffsets;
-
-    public RocketMQFilteringResult(List<MessageQueue> messageQueues, Map<MessageQueue, TopicOffset> messageQueueTopicOffsets){
-        this.messageQueues = messageQueues;
-        this.messageQueueTopicOffsets = messageQueueTopicOffsets;
-    }
-
-    public List<MessageQueue> getMessageQueues() {
-        return messageQueues;
-    }
-
-    public Map<MessageQueue, TopicOffset> getMessageQueueTopicOffsets() {
-        return messageQueueTopicOffsets;
-    }
+public enum RocketMqTransactionHandle implements ConnectorTransactionHandle {
+    INSTANCE
 }

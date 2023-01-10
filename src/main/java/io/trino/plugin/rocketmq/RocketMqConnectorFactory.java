@@ -38,12 +38,12 @@ import static java.util.Objects.requireNonNull;
 /**
  * RocketMQ connector factory
  */
-public class RocketMQConnectorFactory implements ConnectorFactory {
+public class RocketMqConnectorFactory implements ConnectorFactory {
 
 
     private final Module extension;
 
-    public RocketMQConnectorFactory(Module extension) {
+    public RocketMqConnectorFactory(Module extension) {
         this.extension = requireNonNull(extension, "extension is null");
     }
 
@@ -70,10 +70,10 @@ public class RocketMQConnectorFactory implements ConnectorFactory {
                 new CatalogNameModule(catalogName),
                 new JsonModule(),
                 new TypeDeserializerModule(context.getTypeManager()),
-                new RocketMQConnectorModule(),
+                new RocketMqConnectorModule(),
                 extension,
                 binder -> {
-                    binder.bind(ClassLoader.class).toInstance(RocketMQConnectorFactory.class.getClassLoader());
+                    binder.bind(ClassLoader.class).toInstance(RocketMqConnectorFactory.class.getClassLoader());
                     binder.bind(TypeManager.class).toInstance(context.getTypeManager());
                     binder.bind(NodeManager.class).toInstance(context.getNodeManager());
                 });
@@ -82,6 +82,6 @@ public class RocketMQConnectorFactory implements ConnectorFactory {
                 .doNotInitializeLogging()
                 .setRequiredConfigurationProperties(config)
                 .initialize();
-        return injector.getInstance(RocketMQConnector.class);
+        return injector.getInstance(RocketMqConnector.class);
     }
 }

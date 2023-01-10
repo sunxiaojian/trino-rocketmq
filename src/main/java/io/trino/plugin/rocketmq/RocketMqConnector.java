@@ -35,7 +35,7 @@ import static io.trino.spi.transaction.IsolationLevel.checkConnectorSupports;
 /**
  * RocketMQ connector
  */
-public class RocketMQConnector implements Connector {
+public class RocketMqConnector implements Connector {
 
     private final LifeCycleManager lifeCycleManager;
     private final ConnectorMetadata metadata;
@@ -44,7 +44,7 @@ public class RocketMQConnector implements Connector {
     private final ConnectorRecordSetProvider recordSetProvider;
 
     @Inject
-    public RocketMQConnector(
+    public RocketMqConnector(
             LifeCycleManager lifeCycleManager,
             ConnectorMetadata connectorMetadata,
             ConnectorSplitManager connectorSplitManager,
@@ -61,7 +61,7 @@ public class RocketMQConnector implements Connector {
     @Override
     public ConnectorTransactionHandle beginTransaction(IsolationLevel isolationLevel, boolean readOnly, boolean autoCommit) {
         checkConnectorSupports(READ_COMMITTED, isolationLevel);
-        return RocketMQTransactionHandle.INSTANCE;
+        return RocketMqTransactionHandle.INSTANCE;
     }
 
 

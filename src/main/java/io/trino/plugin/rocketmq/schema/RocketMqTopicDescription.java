@@ -30,21 +30,21 @@ import static java.util.Objects.requireNonNull;
 /**
  * Json description to parse a row on a rocketmq topic. A row contains a message and an optional key. See the documentation for the exact JSON syntax.
  */
-public class RocketMQTopicDescription
+public class RocketMqTopicDescription
 {
     private final String tableName;
     private final String topicName;
     private final Optional<String> schemaName;
-    private final Optional<RocketMQTopicFieldGroup> key;
-    private final Optional<RocketMQTopicFieldGroup> message;
+    private final Optional<RocketMqTopicFieldGroup> key;
+    private final Optional<RocketMqTopicFieldGroup> message;
 
     @JsonCreator
-    public RocketMQTopicDescription(
+    public RocketMqTopicDescription(
             @JsonProperty("tableName") String tableName,
             @JsonProperty("schemaName") Optional<String> schemaName,
             @JsonProperty("topicName") String topicName,
-            @JsonProperty("key") Optional<RocketMQTopicFieldGroup> key,
-            @JsonProperty("message") Optional<RocketMQTopicFieldGroup> message)
+            @JsonProperty("key") Optional<RocketMqTopicFieldGroup> key,
+            @JsonProperty("message") Optional<RocketMqTopicFieldGroup> message)
     {
         checkArgument(!isNullOrEmpty(tableName), "tableName is null or is empty");
         this.tableName = tableName;
@@ -70,12 +70,12 @@ public class RocketMQTopicDescription
     }
 
     @JsonProperty
-    public Optional<RocketMQTopicFieldGroup> getKey() {
+    public Optional<RocketMqTopicFieldGroup> getKey() {
         return key;
     }
 
     @JsonProperty
-    public Optional<RocketMQTopicFieldGroup> getMessage() {
+    public Optional<RocketMqTopicFieldGroup> getMessage() {
         return message;
     }
 
@@ -93,7 +93,7 @@ public class RocketMQTopicDescription
             return false;
         }
 
-        RocketMQTopicDescription other = (RocketMQTopicDescription) obj;
+        RocketMqTopicDescription other = (RocketMqTopicDescription) obj;
         return Objects.equals(this.tableName, other.tableName) &&
                 Objects.equals(this.topicName, other.topicName) &&
                 Objects.equals(this.schemaName, other.schemaName) &&

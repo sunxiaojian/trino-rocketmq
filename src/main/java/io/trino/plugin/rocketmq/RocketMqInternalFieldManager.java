@@ -37,7 +37,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * RocketMQ internal field
  */
-public class RocketMQInternalFieldManager {
+public class RocketMqInternalFieldManager {
 
     public static final String QUEUE_ID_FIELD = "_queue_id";
     public static final String BROKER_NAME = "_broker_name";
@@ -52,7 +52,7 @@ public class RocketMQInternalFieldManager {
     private final Map<String, InternalField> internalFields;
 
     @Inject
-    public RocketMQInternalFieldManager(TypeManager typeManager)
+    public RocketMqInternalFieldManager(TypeManager typeManager)
     {
         Type varcharMapType = typeManager.getType(mapType(VARCHAR.getTypeSignature(), arrayType(VARBINARY.getTypeSignature())));
 
@@ -114,8 +114,8 @@ public class RocketMQInternalFieldManager {
             return type;
         }
 
-        RocketMQColumnHandle getColumnHandle(int index, boolean hidden) {
-            return new RocketMQColumnHandle(
+        RocketMqColumnHandle getColumnHandle(int index, boolean hidden) {
+            return new RocketMqColumnHandle(
                     getColumnName(),
                     getType(),
                     null,

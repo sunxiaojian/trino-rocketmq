@@ -45,9 +45,9 @@ import java.util.stream.Collectors;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.OFFSET_TIMESTAMP_FIELD;
-import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.QUEUE_ID_FIELD;
-import static io.trino.plugin.rocketmq.RocketMQInternalFieldManager.QUEUE_OFFSET_FIELD;
+import static io.trino.plugin.rocketmq.RocketMqInternalFieldManager.OFFSET_TIMESTAMP_FIELD;
+import static io.trino.plugin.rocketmq.RocketMqInternalFieldManager.QUEUE_ID_FIELD;
+import static io.trino.plugin.rocketmq.RocketMqInternalFieldManager.QUEUE_OFFSET_FIELD;
 import static io.trino.spi.type.BigintType.BIGINT;
 import static io.trino.spi.type.Timestamps.MICROSECONDS_PER_MILLISECOND;
 import static java.lang.Math.floorDiv;
@@ -56,13 +56,13 @@ import static java.util.Objects.requireNonNull;
 /**
  * rocketmq filter manager
  */
-public class RocketMQFilterManager {
+public class RocketMqFilterManager {
 
     private static final long INVALID_RANGE_INDEX = -1;
-    private RocketMQConsumerFactory consumerFactory;
+    private RocketMqConsumerFactory consumerFactory;
 
     @Inject
-    public RocketMQFilterManager(RocketMQConsumerFactory consumerFactory){
+    public RocketMqFilterManager(RocketMqConsumerFactory consumerFactory){
         this.consumerFactory = requireNonNull(consumerFactory, "RocketMQ consumer factory is null");
     }
 
@@ -74,8 +74,8 @@ public class RocketMQFilterManager {
      * @param messageQueueTopicOffsets
      * @return
      */
-    public RocketMQFilteringResult filter(ConnectorSession session,
-                                          RocketMQTableHandle rocketMQTableHandle,
+    public RocketMqFilteringResult filter(ConnectorSession session,
+                                          RocketMqTableHandle rocketMQTableHandle,
                                           List<MessageQueue> messageQueues,
                                           Map<MessageQueue, TopicOffset> messageQueueTopicOffsets){
         requireNonNull(session, "session is null");
@@ -99,7 +99,7 @@ public class RocketMQFilterManager {
 
             Optional<Map<ColumnHandle, Domain>> domains = constraint.getDomains();
             for (Map.Entry<ColumnHandle, Domain> entry : domains.get().entrySet()) {
-                RocketMQColumnHandle columnHandle = (RocketMQColumnHandle) entry.getKey();
+                RocketMqColumnHandle columnHandle = (RocketMqColumnHandle) entry.getKey();
                 if (!columnHandle.isInternal()) {
                     continue;
                 }
@@ -157,10 +157,10 @@ public class RocketMQFilterManager {
                     .filter(messageQueue -> finalMessageQueueIdsFiltered.contains((long) messageQueue.getQueueId()))
                     .collect(toImmutableList());
             overrideMessageQueueOffsets(messageQueueTopicOffsets, messageQueueBeginOffsets, messageQueueEndOffsets);
-            return new RocketMQFilteringResult(messageQueueFilteredInfos, messageQueueTopicOffsets);
+            return new RocketMqFilteringResult(messageQueueFilteredInfos, messageQueueTopicOffsets);
         }
         overrideMessageQueueOffsets(messageQueueTopicOffsets, messageQueueBeginOffsets, messageQueueEndOffsets);
-        return new RocketMQFilteringResult(messageQueues, messageQueueTopicOffsets);
+        return new RocketMqFilteringResult(messageQueues, messageQueueTopicOffsets);
 
     }
 

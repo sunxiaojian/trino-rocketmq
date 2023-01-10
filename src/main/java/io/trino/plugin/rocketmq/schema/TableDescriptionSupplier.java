@@ -23,5 +23,5 @@ import java.util.Set;
 
 public interface TableDescriptionSupplier {
     Set<SchemaTableName> listTables();
-    Optional<RocketMQTopicDescription> getTopicDescription(ConnectorSession session, SchemaTableName schemaTableName);
+    Optional<RocketMqTopicDescription> getTopicDescription(ConnectorSession session, SchemaTableName schemaTableName);
 }

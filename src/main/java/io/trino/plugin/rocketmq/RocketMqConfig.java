@@ -22,7 +22,7 @@ import io.trino.plugin.rocketmq.schema.file.FileTableDescriptionSupplier;
 import io.trino.spi.HostAddress;
 
 
-public class RocketMQConfig {
+public class RocketMqConfig {
     private static final int NAME_SRV_DEFAULT_PORT = 9876;
 
     private HostAddress nameSrvAddr = HostAddress.fromString("localhost:9876");
@@ -46,7 +46,7 @@ public class RocketMQConfig {
 
     @Config("RocketMQ.rmq-consume-group")
     @ConfigDescription("")
-    public RocketMQConfig setRmqConsumeGroup(String rmqConsumeGroup) {
+    public RocketMqConfig setRmqConsumeGroup(String rmqConsumeGroup) {
         this.rmqConsumeGroup = rmqConsumeGroup;
         return this;
     }
@@ -58,7 +58,7 @@ public class RocketMQConfig {
 
     @Config("RocketMQ.name-srv-addr")
     @ConfigDescription("")
-    public RocketMQConfig setNameSrvAddr(String nameSrvAddr) {
+    public RocketMqConfig setNameSrvAddr(String nameSrvAddr) {
         this.nameSrvAddr = HostAddress.fromString(nameSrvAddr).withDefaultPort(NAME_SRV_DEFAULT_PORT);
         return this;
     }
@@ -69,7 +69,7 @@ public class RocketMQConfig {
 
     @Config("RocketMQ.default-schema")
     @ConfigDescription("")
-    public RocketMQConfig setDefaultSchema(String defaultSchema) {
+    public RocketMqConfig setDefaultSchema(String defaultSchema) {
         this.defaultSchema = defaultSchema;
         return this;
     }
@@ -80,7 +80,7 @@ public class RocketMQConfig {
 
     @Config("RocketMQ.hide-internal-columns")
     @ConfigDescription("Count of RocketMQ messages to be processed by single Trino RocketMQ connector split")
-    public RocketMQConfig setHideInternalColumns(boolean hideInternalColumns) {
+    public RocketMqConfig setHideInternalColumns(boolean hideInternalColumns) {
         this.hideInternalColumns = hideInternalColumns;
         return this;
     }
@@ -91,7 +91,7 @@ public class RocketMQConfig {
 
     @Config("RocketMQ.messages-per-split")
     @ConfigDescription("Count of RocketMQ messages to be processed by single Trino rocketmq connector split")
-    public RocketMQConfig setMessagesPerSplit(int messagesPerSplit) {
+    public RocketMqConfig setMessagesPerSplit(int messagesPerSplit) {
         this.messagesPerSplit = messagesPerSplit;
         return this;
     }
@@ -102,7 +102,7 @@ public class RocketMQConfig {
 
     @Config("RocketMQ.acl-enable")
     @ConfigDescription("")
-    public RocketMQConfig setAclEnable(boolean aclEnable) {
+    public RocketMqConfig setAclEnable(boolean aclEnable) {
         this.aclEnable = aclEnable;
         return this;
     }
@@ -113,7 +113,7 @@ public class RocketMQConfig {
 
     @Config("RocketMQ.table-description-supplier")
     @ConfigDescription("")
-    public RocketMQConfig setTableDescriptionSupplier(String tableDescriptionSupplier) {
+    public RocketMqConfig setTableDescriptionSupplier(String tableDescriptionSupplier) {
         this.tableDescriptionSupplier = tableDescriptionSupplier;
         return this;
     }
@@ -124,7 +124,7 @@ public class RocketMQConfig {
 
     @Config("RocketMQ.access-key")
     @ConfigDescription("")
-    public RocketMQConfig setAccessKey(String accessKey) {
+    public RocketMqConfig setAccessKey(String accessKey) {
         this.accessKey = accessKey;
         return this;
     }
@@ -133,7 +133,7 @@ public class RocketMQConfig {
         return secretKey;
     }
     @Config("RocketMQ.secret-key")
-    public RocketMQConfig setSecretKey(String secretKey) {
+    public RocketMqConfig setSecretKey(String secretKey) {
         this.secretKey = secretKey;
         return this;
     }

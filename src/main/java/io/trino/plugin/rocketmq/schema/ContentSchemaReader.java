@@ -16,7 +16,7 @@
  */
 package io.trino.plugin.rocketmq.schema;
 
-import io.trino.plugin.rocketmq.RocketMQTableHandle;
+import io.trino.plugin.rocketmq.RocketMqTableHandle;
 
 import java.util.Optional;
 
@@ -29,12 +29,12 @@ public interface ContentSchemaReader {
      * @param tableHandle
      * @return
      */
-    Optional<String> readKeyContentSchema(RocketMQTableHandle tableHandle);
+    Optional<String> readKeyContentSchema(RocketMqTableHandle tableHandle);
 
     /**
      * read value content schema
      * @param tableHandle
      * @return
      */
-    Optional<String> readValueContentSchema(RocketMQTableHandle tableHandle);
+    Optional<String> readValueContentSchema(RocketMqTableHandle tableHandle);
 }

@@ -16,16 +16,24 @@
  */
 package io.trino.plugin.rocketmq;
 
-import com.google.inject.Binder;
-import com.google.inject.Scopes;
-import io.airlift.configuration.AbstractConfigurationAwareModule;
+import io.trino.spi.connector.ConnectorInsertTableHandle;
+import io.trino.spi.connector.ConnectorOutputTableHandle;
+import io.trino.spi.connector.ConnectorPageSink;
+import io.trino.spi.connector.ConnectorPageSinkProvider;
+import io.trino.spi.connector.ConnectorSession;
+import io.trino.spi.connector.ConnectorTransactionHandle;
 
-public class RocketMQClientsModule extends AbstractConfigurationAwareModule {
+/**
+ * rocketmq page sink provider
+ */
+public class RocketMqPageSinkProvider implements ConnectorPageSinkProvider {
     @Override
-    protected void setup(Binder binder) {
-        // consumer
-        binder.bind(RocketMQConsumerFactory.class).to(DefaultRocketMQConsumerFactory.class).in(Scopes.SINGLETON);
-        // producer
-        binder.bind(RocketMQProducerFactory.class).to(DefaultRocketMQProducerFactory.class).in(Scopes.SINGLETON);
+    public ConnectorPageSink createPageSink(ConnectorTransactionHandle transactionHandle, ConnectorSession session, ConnectorOutputTableHandle outputTableHandle) {
+        return null;
+    }
+
+    @Override
+    public ConnectorPageSink createPageSink(ConnectorTransactionHandle transactionHandle, ConnectorSession session, ConnectorInsertTableHandle insertTableHandle) {
+        return null;
     }
 }
