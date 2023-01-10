@@ -68,16 +68,21 @@ public class FileTableDescriptionSupplier implements Provider<TableDescriptionSu
         return new MapBasedTableDescriptionSupplier(tables);
     }
 
+    /**
+     * Populate tables
+     * @return
+     */
     private Map<SchemaTableName, RocketMqTopicDescription> populateTables() {
         ImmutableMap.Builder<SchemaTableName, RocketMqTopicDescription> builder = ImmutableMap.builder();
         log.debug("Loading rocketmq table definitions from %s", tableDescriptionDir.getAbsolutePath());
 
         try {
             for (File file : listFiles(tableDescriptionDir)) {
+                // Parse json file
                 if (file.isFile() && file.getName().endsWith(".json")) {
                     RocketMqTopicDescription table = topicDescriptionCodec.fromJson(readAllBytes(file.toPath()));
                     String schemaName = table.getSchemaName().orElse(defaultSchema);
-                    log.debug("Kafka table %s.%s: %s", schemaName, table.getTableName(), table);
+                    log.debug("RocketMq table %s.%s: %s", schemaName, table.getTableName(), table);
                     builder.put(new SchemaTableName(schemaName, table.getTableName()), table);
                 }
             }
@@ -86,18 +91,12 @@ public class FileTableDescriptionSupplier implements Provider<TableDescriptionSu
             log.debug("Loaded Table definitions: %s", tableDefinitions.keySet());
             builder = ImmutableMap.builder();
             for (String definedTable : tableNames) {
-                SchemaTableName tableName;
-                try {
-                    tableName = parseTableName(definedTable);
-                } catch (IllegalArgumentException iae) {
-                    tableName = new SchemaTableName(defaultSchema, definedTable);
-                }
+                SchemaTableName tableName = parseTableName(definedTable);
                 if (tableDefinitions.containsKey(tableName)) {
                     RocketMqTopicDescription rocketmqTable = tableDefinitions.get(tableName);
                     log.debug("Found Table definition for %s: %s", tableName, rocketmqTable);
                     builder.put(tableName, rocketmqTable);
-                }
-                else {
+                } else {
                     // A dummy table definition only supports the internal columns.
                     log.debug("Created dummy Table definition for %s", tableName);
                     builder.put(
@@ -113,9 +112,8 @@ public class FileTableDescriptionSupplier implements Provider<TableDescriptionSu
             }
 
             return builder.buildOrThrow();
-        }
-        catch (IOException e) {
-            log.warn(e, "Failed to get table description files for rocketmq");
+        } catch (IOException e) {
+            log.warn(e, "Failed to get table description files for RocketMq");
             throw new UncheckedIOException(e);
         }
     }
@@ -132,10 +130,20 @@ public class FileTableDescriptionSupplier implements Provider<TableDescriptionSu
         return ImmutableList.of();
     }
 
-    private static SchemaTableName parseTableName(String schemaTableName) {
+    /**
+     * Parse table name
+     * @param schemaTableName
+     * @return
+     */
+    private SchemaTableName parseTableName(String schemaTableName) {
         checkArgument(!isNullOrEmpty(schemaTableName), "schemaTableName is null or is empty");
         List<String> parts = Splitter.on('.').splitToList(schemaTableName);
         checkArgument(parts.size() == 2, "Invalid schemaTableName: %s", schemaTableName);
-        return new SchemaTableName(parts.get(0), parts.get(1));
+
+        if(parts.size() == 2 ){
+            return new SchemaTableName(parts.get(0), parts.get(1));
+        } else {
+            return new SchemaTableName(defaultSchema, schemaTableName);
+        }
     }
 }
