@@ -43,22 +43,34 @@ public class RocketMqConnectorModule
         extends AbstractConfigurationAwareModule {
     @Override
     public void setup(Binder binder) {
+
+        // Bind rocketmq config
+        configBinder(binder).bindConfig(RocketMqConfig.class);
+
+        // Bind connector metadata
         binder.bind(ConnectorMetadata.class).annotatedWith(ForClassLoaderSafe.class).to(RocketMqMetadata.class).in(Scopes.SINGLETON);
         binder.bind(ConnectorMetadata.class).to(ClassLoaderSafeConnectorMetadata.class).in(Scopes.SINGLETON);
+
+        // Bind connector split manager, Split data into multiple blocks
         binder.bind(ConnectorSplitManager.class).annotatedWith(ForClassLoaderSafe.class).to(RocketMqSplitManager.class).in(Scopes.SINGLETON);
         binder.bind(ConnectorSplitManager.class).to(ClassLoaderSafeConnectorSplitManager.class).in(Scopes.SINGLETON);
+
+        // Bind connector record set provider
         binder.bind(ConnectorRecordSetProvider.class).annotatedWith(ForClassLoaderSafe.class).to(RocketMqRecordSetProvider.class).in(Scopes.SINGLETON);
         binder.bind(ConnectorRecordSetProvider.class).to(ClassLoaderSafeConnectorRecordSetProvider.class).in(Scopes.SINGLETON);
-        // page sink provider
+
+        // Bind page sink provider
         binder.bind(ConnectorPageSinkProvider.class).annotatedWith(ForClassLoaderSafe.class).to(RocketMqPageSinkProvider.class).in(Scopes.SINGLETON);
         binder.bind(ConnectorPageSinkProvider.class).to(ClassLoaderSafeConnectorPageSinkProvider.class).in(Scopes.SINGLETON);
+
+        // Bind rocketmq connector
         binder.bind(RocketMqConnector.class).in(Scopes.SINGLETON);
+
+        // Bind rocketmq internal filed manager
         binder.bind(RocketMqInternalFieldManager.class).in(Scopes.SINGLETON);
         binder.bind(RocketMqFilterManager.class).in(Scopes.SINGLETON);
 
-        // build config
-        configBinder(binder).bindConfig(RocketMqConfig.class);
-        // file table description
+        // Bind file table description supplier
         bindTopicSchemaProviderModule(FileTableDescriptionSupplier.NAME, new FileTableDescriptionSupplierModule());
 
         jsonCodecBinder(binder).bindJsonCodec(RocketMqTopicDescription.class);

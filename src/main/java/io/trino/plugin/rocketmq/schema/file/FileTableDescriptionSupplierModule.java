@@ -32,10 +32,16 @@ import static io.airlift.configuration.ConfigBinder.configBinder;
 public class FileTableDescriptionSupplierModule extends AbstractConfigurationAwareModule {
     @Override
     protected void setup(Binder binder) {
+
+        // Bind file table description supplier
         configBinder(binder).bindConfig(FileTableDescriptionSupplierConfig.class);
         binder.bind(TableDescriptionSupplier.class).toProvider(FileTableDescriptionSupplier.class).in(Scopes.SINGLETON);
+
+        // Install decoder and encoder
         install(new DecoderModule());
         install(new EncoderModule());
+
+        // Bind file schema reader
         binder.bind(ContentSchemaReader.class).to(FileContentSchemaReader.class).in(Scopes.SINGLETON);
     }
 }

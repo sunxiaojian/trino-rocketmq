@@ -35,7 +35,15 @@ public class RocketMqTopicDescription
     private final String tableName;
     private final String topicName;
     private final Optional<String> schemaName;
+
+    /**
+     * key field
+     */
     private final Optional<RocketMqTopicFieldGroup> key;
+
+    /**
+     * message
+     */
     private final Optional<RocketMqTopicFieldGroup> message;
 
     @JsonCreator

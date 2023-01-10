@@ -28,7 +28,7 @@ import java.util.Set;
 import static java.util.Objects.requireNonNull;
 
 /**
- * map based table description supplier
+ * Map based table description supplier
  */
 public class MapBasedTableDescriptionSupplier implements TableDescriptionSupplier {
     private final Map<SchemaTableName, RocketMqTopicDescription> map;
