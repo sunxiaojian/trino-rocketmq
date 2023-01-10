@@ -111,7 +111,7 @@ public class RocketMqInternalFieldManager {
             return type;
         }
 
-        RocketMqColumnHandle getColumnHandle(int index, boolean hidden) {
+        RocketMqColumnHandle getColumnHandle(boolean hidden) {
             return new RocketMqColumnHandle(
                     getColumnName(),
                     getType(),
