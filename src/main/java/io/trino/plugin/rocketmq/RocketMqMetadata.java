@@ -145,7 +145,7 @@ public class RocketMqMetadata implements ConnectorMetadata {
         });
 
         for (RocketMqInternalFieldManager.InternalField rocketmqInternalField : rocketMQInternalFieldManager.getInternalFields().values()) {
-            columnHandles.put(rocketmqInternalField.getColumnName(), rocketmqInternalField.getColumnHandle(index.getAndIncrement(), hideInternalColumns));
+            columnHandles.put(rocketmqInternalField.getColumnName(), rocketmqInternalField.getColumnHandle(hideInternalColumns));
         }
 
         return columnHandles.buildOrThrow();
